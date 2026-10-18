@@ -49,12 +49,12 @@ select{font:inherit;font-size:15px;padding:6px 10px;border-radius:8px;background
 /* touch controls */
 .controls{display:none;width:100%;max-width:480px;justify-content:space-between;align-items:center;padding:0 8px;touch-action:none;flex:0 0 auto}
 .abtns{position:relative;width:142px;height:122px}
-.abtn{position:absolute;width:68px;height:68px;border-radius:50%;padding:0;color:#fff;touch-action:none;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;line-height:1;
+.abtn{position:absolute;width:72px;height:72px;border-radius:50%;padding:0;color:#fff;touch-action:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;line-height:1;overflow:hidden;
   background:radial-gradient(circle at 35% 28%,#3b444c,#171b20 62%,#0b0d10);border:4px double #dfe6ea;
   box-shadow:0 5px 0 #05070a,0 8px 14px rgba(0,0,0,.65),inset 0 2px 3px rgba(255,255,255,.18)}
-.abtn .ic{width:26px;height:26px}
-.abtn .cap{font-family:var(--pix);font-size:6px;color:#ffd54a}
+.abtn .ic{width:19px;height:19px;flex:0 0 auto}
+.abtn .cap{font-family:Tahoma,sans-serif;font-size:9px;font-weight:700;line-height:1;color:#ffd54a;white-space:nowrap}
 .abtn.pressed{transform:translateY(4px);color:#ffd54a;box-shadow:0 1px 0 #05070a,0 0 16px rgba(255,213,74,.55),inset 0 0 8px rgba(255,213,74,.25)}
 #bFast{left:0;bottom:0}
 #bRot{right:0;top:0}
