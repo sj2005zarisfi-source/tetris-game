@@ -335,7 +335,7 @@ function setDir(d) {
   dpDir = d;
   dpad.className = 'dpad' + (d ? ' on-' + d : '');
   if (!d) return;
-  if (d === 'up') fire('hard');             // ultra fast: instant drop
+  if (d === 'up') fire('rotate');           // up = rotate
   else press('dpad', d);                    // left/right move, down = fast (not instant) fall
 }
 dpad.addEventListener('pointerdown', e => {
