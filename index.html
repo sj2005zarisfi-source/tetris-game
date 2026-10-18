@@ -19,6 +19,11 @@
     <aside class="col">
       <div class="box"><h3>HOLD</h3><canvas id="hold" width="80" height="64"></canvas></div>
       <div class="box"><h3>TIME</h3><div id="time" class="val">00:00</div></div>
+      <div class="pills">
+        <button id="bHold" class="pill">HOLD</button>
+        <button id="bPause" class="pill">PAUSE</button>
+        <button id="bSound" class="pill">SOUND</button>
+      </div>
       <div class="box help">
         ← → حرکت<br>↓ سقوط تند<br>Space سقوط آنی<br>↑ / X چرخش<br>Z چرخش معکوس<br>C نگه‌داشتن<br>P توقف · M صدا
       </div>
@@ -51,13 +56,8 @@
 
   <div class="controls">
     <div class="abtns">
-      <button id="bFast" class="abtn" aria-label="سقوط تند"><span class="ic">⏬</span><span class="cap">سریع</span></button>
-      <button id="bRot" class="abtn" aria-label="چرخش"><span class="ic">⟳</span><span class="cap">چرخش</span></button>
-    </div>
-    <div class="mid">
-      <button id="bHold" class="pill">HOLD</button>
-      <button id="bPause" class="pill">PAUSE</button>
-      <button id="bSound" class="pill">SOUND</button>
+      <button id="bFast" class="abtn" aria-label="سقوط تند"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 4.5l6.5 6.5 6.5-6.5M5.5 12.5l6.5 6.5 6.5-6.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="cap">سریع</span></button>
+      <button id="bRot" class="abtn" aria-label="چرخش"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4a8 8 0 1 0 7.5 5.2" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><path d="M19.5 3.2l4 7.2h-8z" fill="currentColor"/></svg><span class="cap">چرخش</span></button>
     </div>
     <div id="dpad" class="dpad" aria-label="جهت‌ها">
       <i class="u"></i><i class="d"></i><i class="l"></i><i class="r"></i><i class="c"></i>
