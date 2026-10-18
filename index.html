@@ -2,52 +2,67 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
 <title>تتریس</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main class="game" dir="ltr">
-  <aside class="side">
-    <div class="panel"><h3>Hold</h3><canvas id="hold" width="96" height="96"></canvas></div>
-    <div class="panel"><h3>امتیاز</h3><div id="score" class="val">0</div></div>
-    <div class="panel"><h3>سطح</h3><div id="level" class="val">1</div></div>
-    <div class="panel"><h3>خط‌ها</h3><div id="lines" class="val">0</div></div>
-    <div class="panel"><h3>رکورد</h3><div id="best" class="val">0</div></div>
-  </aside>
+<canvas id="bg"></canvas>
+<div class="vignette"></div>
 
-  <div class="board-wrap">
-    <canvas id="board" width="300" height="600"></canvas>
-    <div id="overlay" class="overlay">
-      <h1 id="ovTitle">تتریس</h1>
-      <p id="ovText">برای شروع Enter یا دکمه زیر را بزنید</p>
-      <button id="startBtn">شروع بازی</button>
+<div class="app" dir="ltr">
+  <div class="stage">
+    <aside class="col">
+      <div class="box"><h3>HOLD</h3><canvas id="hold" width="80" height="64"></canvas></div>
+      <div class="box"><h3>TIME</h3><div id="time" class="val">00:00</div></div>
+      <div class="box help">
+        ← → حرکت<br>↓ سقوط تند<br>Space سقوط آنی<br>↑ / X چرخش<br>Z چرخش معکوس<br>C نگه‌داشتن<br>P توقف · M صدا
+      </div>
+    </aside>
+
+    <div class="center">
+      <div class="banner" id="lines">LINES-000</div>
+      <div class="frame" id="frame">
+        <canvas id="board" width="300" height="600"></canvas>
+        <div id="toast" class="toast"></div>
+        <div id="overlay" class="overlay">
+          <h1 id="ovTitle">TETRIS</h1>
+          <p id="ovText"></p>
+          <label id="lvWrap" class="lv">سطح شروع
+            <select id="startLevel"></select>
+          </label>
+          <button id="startBtn" class="go">شروع بازی</button>
+          <p id="ovRules" class="rules">امتیاز فقط از پاک‌کردن خط‌هاست:<br>۱ خط = ۴۰ · ۲ خط = ۱۰۰ · ۳ خط = ۳۰۰ · تتریس = ۱۲۰۰<br>همه × شماره سطح</p>
+        </div>
+      </div>
     </div>
+
+    <aside class="col">
+      <div class="box"><h3>SCORE</h3><div id="score" class="val">0000000</div></div>
+      <div class="box"><h3>NEXT</h3><canvas id="next" width="80" height="64"></canvas></div>
+      <div class="box"><h3>SPEED LV</h3><div id="level" class="val">01</div></div>
+      <div class="box"><h3>BEST</h3><div id="best" class="val">0000000</div></div>
+    </aside>
   </div>
 
-  <aside class="side">
-    <div class="panel"><h3>بعدی</h3><canvas id="next" width="96" height="260"></canvas></div>
-    <div class="panel help">
-      <b>کلیدها</b><br>
-      ← → حرکت<br>
-      ↑ / X چرخش<br>
-      Z چرخش معکوس<br>
-      ↓ سقوط نرم<br>
-      Space سقوط سریع<br>
-      C / Shift نگه‌داشتن<br>
-      P / Esc توقف
+  <div class="controls">
+    <div class="abtns">
+      <button id="bFast" class="abtn" aria-label="سقوط تند"><span class="ic">⏬</span><span class="cap">سریع</span></button>
+      <button id="bRot" class="abtn" aria-label="چرخش"><span class="ic">⟳</span><span class="cap">چرخش</span></button>
     </div>
-  </aside>
-</main>
-
-<div class="touch" dir="ltr">
-  <button data-a="left">◀</button>
-  <button data-a="rotate">⟳</button>
-  <button data-a="right">▶</button>
-  <button data-a="down">▼</button>
-  <button data-a="drop">⤓</button>
-  <button data-a="hold">H</button>
-  <button data-a="pause">⏸</button>
+    <div class="mid">
+      <button id="bHold" class="pill">HOLD</button>
+      <button id="bPause" class="pill">PAUSE</button>
+      <button id="bSound" class="pill">SOUND</button>
+    </div>
+    <div id="dpad" class="dpad" aria-label="جهت‌ها">
+      <i class="u"></i><i class="d"></i><i class="l"></i><i class="r"></i><i class="c"></i>
+    </div>
+  </div>
 </div>
 <script src="game.js"></script>
 </body>
