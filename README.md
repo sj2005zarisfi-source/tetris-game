@@ -1,2 +1,3 @@
-# tetris-game
-Tetris game (HTML/CSS/JS)
+# Tetris
+
+بازی تتریس با HTML/CSS/JavaScript خالص. بدون وابستگی؛ فقط `index.html` را باز کنید.
