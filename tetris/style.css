@@ -86,3 +86,6 @@ select{font:inherit;font-size:15px;padding:6px 10px;border-radius:8px;background
   .help{display:none}.toast{font-size:9px}.toast.big{font-size:12px}
   .overlay h1{font-size:15px}.overlay p{font-size:11px}.overlay .rules{font-size:9.5px}.go{font-size:9px;padding:11px 14px}
 }
+
+.back{position:fixed;top:max(6px,env(safe-area-inset-top));left:6px;z-index:30;font-size:11px;color:#dfe6ea;text-decoration:none;
+  background:rgba(0,0,0,.6);border:2px solid #dfe6ea;border-radius:8px;padding:5px 9px}

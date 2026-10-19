@@ -2,68 +2,55 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#000000">
-<title>تتریس</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1220">
+<title>بازی‌ها</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;margin:0}
+body{background:radial-gradient(circle at 50% 0,#222a5a,#0b0e1c 60%);color:#fff;font-family:Tahoma,system-ui,sans-serif;
+  display:flex;flex-direction:column;align-items:center;padding:max(26px,env(safe-area-inset-top)) 16px 30px;gap:22px;min-height:100vh}
+h1{margin:6px 0 0;font-size:30px;color:#ffe57a;text-shadow:0 3px 0 #7a3b00}
+p.sub{margin:0;color:#aab2d5;font-size:14px}
+.grid{display:grid;grid-template-columns:1fr;gap:18px;width:100%;max-width:760px}
+@media (min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+a.card{display:block;text-decoration:none;color:inherit;border-radius:20px;overflow:hidden;border:2px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.05);box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .15s,border-color .15s}
+a.card:active{transform:scale(.97);border-color:#ffe57a}
+.thumb{height:170px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.t1{background:radial-gradient(circle at 50% 120%,#1b2250,#000)}
+.t2{background:linear-gradient(90deg,#2f8a3b 0 12.5%,#369a43 0 25%,#2f8a3b 0 37.5%,#369a43 0 50%,#2f8a3b 0 62.5%,#369a43 0 75%,#2f8a3b 0 87.5%,#369a43 0)}
+.info{padding:14px 16px 16px}
+.info h2{margin:0 0 4px;font-size:20px}
+.info p{margin:0;color:#aab2d5;font-size:13px;line-height:1.8}
+.badge{display:inline-block;margin-top:8px;font-size:11px;color:#ffe57a;background:rgba(255,229,122,.12);border-radius:8px;padding:3px 8px}
+.blk{position:absolute;width:26px;height:26px;border:3px solid rgba(255,255,255,.25);border-radius:3px}
+.disc{position:absolute;width:38px;height:38px;border-radius:50%;border:4px solid #e8edf5;box-shadow:0 4px 6px rgba(0,0,0,.4)}
+</style>
 </head>
 <body>
-<canvas id="bg"></canvas>
-<div class="vignette"></div>
-
-<div class="app" dir="ltr">
-  <div class="stage">
-    <aside class="col">
-      <div class="box"><h3>HOLD</h3><canvas id="hold" width="80" height="64"></canvas></div>
-      <div class="box"><h3>TIME</h3><div id="time" class="val">00:00</div></div>
-      <div class="pills">
-        <button id="bHold" class="pill">HOLD</button>
-        <button id="bPause" class="pill">PAUSE</button>
-        <button id="bSound" class="pill">SOUND</button>
-      </div>
-      <div class="box help">
-        ← → حرکت<br>↓ سقوط تند<br>Space سقوط آنی<br>↑ / X چرخش<br>Z چرخش معکوس<br>C نگه‌داشتن<br>P توقف · M صدا
-      </div>
-    </aside>
-
-    <div class="center">
-      <div class="banner" id="lines">LINES-000</div>
-      <div class="frame" id="frame">
-        <canvas id="board" width="300" height="600"></canvas>
-        <div id="toast" class="toast"></div>
-        <div id="overlay" class="overlay">
-          <h1 id="ovTitle">TETRIS</h1>
-          <p id="ovText"></p>
-          <label id="lvWrap" class="lv">سطح شروع
-            <select id="startLevel"></select>
-          </label>
-          <button id="startBtn" class="go">شروع بازی</button>
-          <p id="ovRules" class="rules">امتیاز فقط از پاک‌کردن خط‌هاست:<br>۱ خط = ۴۰ · ۲ خط = ۱۰۰ · ۳ خط = ۳۰۰ · تتریس = ۱۲۰۰<br>همه × شماره سطح</p>
-        </div>
-      </div>
+<h1>🎮 بازی‌ها</h1>
+<p class="sub">یکی را انتخاب کن</p>
+<div class="grid">
+  <a class="card" href="tetris/">
+    <div class="thumb t1">
+      <i class="blk" style="left:calc(50% - 52px);top:30px;background:#7a55bd"></i><i class="blk" style="left:calc(50% - 26px);top:30px;background:#7a55bd"></i><i class="blk" style="left:calc(50% - 0px);top:30px;background:#7a55bd"></i><i class="blk" style="left:calc(50% - 26px);top:56px;background:#7a55bd"></i>
+      <i class="blk" style="left:calc(50% - 52px);top:118px;background:#1b9bb0"></i><i class="blk" style="left:calc(50% - 26px);top:118px;background:#1b9bb0"></i><i class="blk" style="left:calc(50% - 0px);top:118px;background:#1b9bb0"></i><i class="blk" style="left:calc(50% + 26px);top:118px;background:#1b9bb0"></i>
+      <i class="blk" style="left:calc(50% - 78px);top:144px;background:#c87825"></i><i class="blk" style="left:calc(50% - 52px);top:144px;background:#bf9a17"></i><i class="blk" style="left:calc(50% - 26px);top:144px;background:#37a06a"></i><i class="blk" style="left:calc(50% - 0px);top:144px;background:#b53a3a"></i><i class="blk" style="left:calc(50% + 26px);top:144px;background:#3560bb"></i><i class="blk" style="left:calc(50% + 52px);top:144px;background:#c87825"></i>
     </div>
-
-    <aside class="col">
-      <div class="box"><h3>SCORE</h3><div id="score" class="val">0000000</div></div>
-      <div class="box"><h3>NEXT</h3><canvas id="next" width="80" height="64"></canvas></div>
-      <div class="box"><h3>SPEED LV</h3><div id="level" class="val">01</div></div>
-      <div class="box"><h3>BEST</h3><div id="best" class="val">0000000</div></div>
-    </aside>
-  </div>
-
-  <div class="controls">
-    <div class="abtns">
-      <button id="bFast" class="abtn" aria-label="سقوط تند"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 4.5l6.5 6.5 6.5-6.5M5.5 12.5l6.5 6.5 6.5-6.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="cap">سریع</span></button>
-      <button id="bRot" class="abtn" aria-label="چرخش"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4a8 8 0 1 0 7.5 5.2" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><path d="M19.5 3.2l4 7.2h-8z" fill="currentColor"/></svg><span class="cap">چرخش</span></button>
+    <div class="info"><h2>تتریس</h2><p>نسخه کلاسیک با امتیازدهی NES، سطح‌بندی و کنترل لمسی.</p><span class="badge" id="tbest">رکورد: ۰</span></div>
+  </a>
+  <a class="card" href="soccer/">
+    <div class="thumb t2">
+      <i class="disc" style="left:18%;top:62px;background:#2a64e0"></i><i class="disc" style="left:30%;top:20px;background:#2a64e0"></i><i class="disc" style="left:30%;top:104px;background:#2a64e0"></i>
+      <i class="disc" style="right:18%;top:62px;background:#e0434d;border-color:#f6dc86"></i><i class="disc" style="right:30%;top:20px;background:#e0434d;border-color:#f6dc86"></i><i class="disc" style="right:30%;top:104px;background:#e0434d;border-color:#f6dc86"></i>
+      <i style="position:absolute;left:calc(50% - 9px);top:76px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 3px 4px rgba(0,0,0,.4)"></i>
     </div>
-    <div id="dpad" class="dpad" aria-label="جهت‌ها">
-      <i class="u"></i><i class="d"></i><i class="l"></i><i class="r"></i><i class="c"></i>
-    </div>
-  </div>
+    <div class="info"><h2>فوتبال دیسکی</h2><p>دیسک‌ها را بکش و رها کن؛ اولین نفری که به ۳ گل برسد برنده است. تک‌نفره یا دو نفره.</p><span class="badge">انتخاب ترکیب · ۳ سطح کامپیوتر</span></div>
+  </a>
 </div>
-<script src="game.js"></script>
+<script>
+try{const b=+localStorage.getItem('tetris-best-v2')||0;if(b)document.getElementById('tbest').textContent='رکورد: '+b.toLocaleString('fa-IR')}catch(e){}
+</script>
 </body>
 </html>
