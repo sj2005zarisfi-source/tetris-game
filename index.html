@@ -8,49 +8,100 @@
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%;margin:0}
-body{background:radial-gradient(circle at 50% 0,#222a5a,#0b0e1c 60%);color:#fff;font-family:Tahoma,system-ui,sans-serif;
-  display:flex;flex-direction:column;align-items:center;padding:max(26px,env(safe-area-inset-top)) 16px 30px;gap:22px;min-height:100vh}
-h1{margin:6px 0 0;font-size:30px;color:#ffe57a;text-shadow:0 3px 0 #7a3b00}
-p.sub{margin:0;color:#aab2d5;font-size:14px}
-.grid{display:grid;grid-template-columns:1fr;gap:18px;width:100%;max-width:760px}
+body{background:linear-gradient(160deg,#1a2050,#0b0e1c 55%,#10241c);background-size:200% 200%;animation:bgMove 16s ease-in-out infinite alternate,pageIn .5s;
+  color:#fff;font-family:Tahoma,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;
+  padding:max(26px,env(safe-area-inset-top)) 16px 34px;gap:20px;min-height:100vh;overflow-x:hidden}
+body.leaving{animation:out .26s forwards}
+#fx{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.fl{position:absolute;bottom:-60px;opacity:0;animation:floatUp linear infinite}
+h1,p.sub,.grid{position:relative;z-index:1}
+h1{margin:6px 0 0;font-size:32px;background:linear-gradient(90deg,#ffe57a,#fff,#ffb347,#ffe57a);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;
+  color:transparent;animation:shimmer 4s linear infinite,drop .8s cubic-bezier(.2,1.6,.4,1)}
+p.sub{margin:0;color:#aab2d5;font-size:14px;animation:fadeUp .6s .2s backwards}
+.grid{display:grid;grid-template-columns:1fr;gap:18px;width:100%;max-width:920px}
 @media (min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+@media (min-width:960px){.grid{grid-template-columns:repeat(3,1fr);max-width:1000px}}
 a.card{display:block;text-decoration:none;color:inherit;border-radius:20px;overflow:hidden;border:2px solid rgba(255,255,255,.18);
-  background:rgba(255,255,255,.05);box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .15s,border-color .15s}
-a.card:active{transform:scale(.97);border-color:#ffe57a}
-.thumb{height:170px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+  background:rgba(255,255,255,.06);backdrop-filter:blur(4px);box-shadow:0 10px 30px rgba(0,0,0,.45);
+  animation:cardIn .7s cubic-bezier(.2,1.2,.4,1) backwards;transition:transform .2s,border-color .2s,box-shadow .2s}
+a.card:nth-child(1){animation-delay:.25s}a.card:nth-child(2){animation-delay:.4s}a.card:nth-child(3){animation-delay:.55s}
+@media (hover:hover){a.card:hover{transform:translateY(-8px) scale(1.02);border-color:#ffe57a;box-shadow:0 18px 40px rgba(0,0,0,.55),0 0 24px rgba(255,229,122,.25)}}
+a.card:active{transform:scale(.96);border-color:#ffe57a}
+.thumb{height:170px;position:relative;overflow:hidden;transition:transform .4s}
+a.card:hover .thumb{transform:scale(1.06)}
 .t1{background:radial-gradient(circle at 50% 120%,#1b2250,#000)}
-.t2{background:linear-gradient(90deg,#2f8a3b 0 12.5%,#369a43 0 25%,#2f8a3b 0 37.5%,#369a43 0 50%,#2f8a3b 0 62.5%,#369a43 0 75%,#2f8a3b 0 87.5%,#369a43 0)}
+.t2{background:repeating-linear-gradient(90deg,#2f8a3b 0 12.5%,#369a43 12.5% 25%)}
+.t3{background:#faf8ef}
 .info{padding:14px 16px 16px}
 .info h2{margin:0 0 4px;font-size:20px}
 .info p{margin:0;color:#aab2d5;font-size:13px;line-height:1.8}
 .badge{display:inline-block;margin-top:8px;font-size:11px;color:#ffe57a;background:rgba(255,229,122,.12);border-radius:8px;padding:3px 8px}
-.blk{position:absolute;width:26px;height:26px;border:3px solid rgba(255,255,255,.25);border-radius:3px}
-.disc{position:absolute;width:38px;height:38px;border-radius:50%;border:4px solid #e8edf5;box-shadow:0 4px 6px rgba(0,0,0,.4)}
+.blk{position:absolute;width:26px;height:26px;border:3px solid rgba(255,255,255,.25);border-radius:3px;animation:fall 2.8s ease-in infinite backwards}
+.disc{position:absolute;width:38px;height:38px;border-radius:50%;border:4px solid #e8edf5;box-shadow:0 4px 6px rgba(0,0,0,.4);animation:bob 2.2s ease-in-out infinite alternate}
+.ball{position:absolute;left:calc(50% - 9px);top:76px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 3px 4px rgba(0,0,0,.4);animation:roll 2.4s ease-in-out infinite alternate}
+.mt{position:absolute;width:44px;height:44px;border-radius:6px;display:flex;align-items:center;justify-content:center;font:800 20px Arial;color:#776e65;animation:pulse 2.4s ease-in-out infinite}
+@keyframes pageIn{from{opacity:0}to{opacity:1}}
+@keyframes out{to{opacity:0;transform:scale(.96)}}
+@keyframes bgMove{from{background-position:0 0}to{background-position:100% 100%}}
+@keyframes shimmer{to{background-position:-250% 0}}
+@keyframes drop{from{opacity:0;transform:translateY(-40px) scale(.7)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes cardIn{from{opacity:0;transform:translateY(50px) scale(.88)}to{opacity:1;transform:none}}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) rotate(0)}12%{opacity:.28}85%{opacity:.2}100%{opacity:0;transform:translateY(-115vh) rotate(300deg)}}
+@keyframes fall{0%{opacity:0;transform:translateY(-70px)}25%{opacity:1}60%,100%{opacity:1;transform:none}}
+@keyframes bob{to{transform:translateY(-9px)}}
+@keyframes roll{from{transform:translateX(-44px) rotate(0)}to{transform:translateX(44px) rotate(540deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style>
 </head>
 <body>
+<div id="fx"></div>
 <h1>🎮 بازی‌ها</h1>
 <p class="sub">یکی را انتخاب کن</p>
 <div class="grid">
   <a class="card" href="tetris/">
     <div class="thumb t1">
-      <i class="blk" style="left:calc(50% - 52px);top:30px;background:#7a55bd"></i><i class="blk" style="left:calc(50% - 26px);top:30px;background:#7a55bd"></i><i class="blk" style="left:calc(50% - 0px);top:30px;background:#7a55bd"></i><i class="blk" style="left:calc(50% - 26px);top:56px;background:#7a55bd"></i>
-      <i class="blk" style="left:calc(50% - 52px);top:118px;background:#1b9bb0"></i><i class="blk" style="left:calc(50% - 26px);top:118px;background:#1b9bb0"></i><i class="blk" style="left:calc(50% - 0px);top:118px;background:#1b9bb0"></i><i class="blk" style="left:calc(50% + 26px);top:118px;background:#1b9bb0"></i>
+      <i class="blk" style="left:calc(50% - 52px);top:30px;background:#7a55bd;animation-delay:.0s"></i><i class="blk" style="left:calc(50% - 26px);top:30px;background:#7a55bd;animation-delay:.1s"></i><i class="blk" style="left:calc(50% - 0px);top:30px;background:#7a55bd;animation-delay:.2s"></i><i class="blk" style="left:calc(50% - 26px);top:56px;background:#7a55bd;animation-delay:.3s"></i>
+      <i class="blk" style="left:calc(50% - 52px);top:118px;background:#1b9bb0;animation-delay:.5s"></i><i class="blk" style="left:calc(50% - 26px);top:118px;background:#1b9bb0;animation-delay:.6s"></i><i class="blk" style="left:calc(50% - 0px);top:118px;background:#1b9bb0;animation-delay:.7s"></i><i class="blk" style="left:calc(50% + 26px);top:118px;background:#1b9bb0;animation-delay:.8s"></i>
       <i class="blk" style="left:calc(50% - 78px);top:144px;background:#c87825"></i><i class="blk" style="left:calc(50% - 52px);top:144px;background:#bf9a17"></i><i class="blk" style="left:calc(50% - 26px);top:144px;background:#37a06a"></i><i class="blk" style="left:calc(50% - 0px);top:144px;background:#b53a3a"></i><i class="blk" style="left:calc(50% + 26px);top:144px;background:#3560bb"></i><i class="blk" style="left:calc(50% + 52px);top:144px;background:#c87825"></i>
     </div>
     <div class="info"><h2>تتریس</h2><p>نسخه کلاسیک با امتیازدهی NES، سطح‌بندی و کنترل لمسی.</p><span class="badge" id="tbest">رکورد: ۰</span></div>
   </a>
   <a class="card" href="soccer/">
     <div class="thumb t2">
-      <i class="disc" style="left:18%;top:62px;background:#2a64e0"></i><i class="disc" style="left:30%;top:20px;background:#2a64e0"></i><i class="disc" style="left:30%;top:104px;background:#2a64e0"></i>
-      <i class="disc" style="right:18%;top:62px;background:#e0434d;border-color:#f6dc86"></i><i class="disc" style="right:30%;top:20px;background:#e0434d;border-color:#f6dc86"></i><i class="disc" style="right:30%;top:104px;background:#e0434d;border-color:#f6dc86"></i>
-      <i style="position:absolute;left:calc(50% - 9px);top:76px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 3px 4px rgba(0,0,0,.4)"></i>
+      <i class="disc" style="left:18%;top:62px;background:#2a64e0"></i><i class="disc" style="left:30%;top:20px;background:#2a64e0;animation-delay:.4s"></i><i class="disc" style="left:30%;top:104px;background:#2a64e0;animation-delay:.8s"></i>
+      <i class="disc" style="right:18%;top:62px;background:#e0434d;border-color:#f6dc86;animation-delay:.2s"></i><i class="disc" style="right:30%;top:20px;background:#e0434d;border-color:#f6dc86;animation-delay:.6s"></i><i class="disc" style="right:30%;top:104px;background:#e0434d;border-color:#f6dc86;animation-delay:1s"></i>
+      <i class="ball"></i>
     </div>
     <div class="info"><h2>فوتبال دیسکی</h2><p>دیسک‌ها را بکش و رها کن؛ اولین نفری که به ۳ گل برسد برنده است. تک‌نفره یا دو نفره.</p><span class="badge">انتخاب ترکیب · ۳ سطح کامپیوتر</span></div>
   </a>
+  <a class="card" href="2048/">
+    <div class="thumb t3">
+      <i class="mt" style="left:calc(50% - 70px);top:36px;background:#eee4da">2</i><i class="mt" style="left:calc(50% - 22px);top:36px;background:#f2b179;color:#fff;animation-delay:.3s">8</i><i class="mt" style="left:calc(50% + 26px);top:36px;background:#f65e3b;color:#fff;animation-delay:.6s">64</i>
+      <i class="mt" style="left:calc(50% - 70px);top:86px;background:#ede0c8;animation-delay:.9s">4</i><i class="mt" style="left:calc(50% - 22px);top:86px;background:#edcf72;color:#fff;animation-delay:1.2s">128</i><i class="mt" style="left:calc(50% + 26px);top:86px;background:#edc22e;color:#fff;font-size:17px;animation-delay:1.5s">2048</i>
+    </div>
+    <div class="info"><h2>2048</h2><p>کاشی‌های هم‌شماره را بکش و ترکیب کن تا به ۲۰۴۸ برسی. دکمه بازگشت (UNDO) هم دارد.</p><span class="badge" id="b2048">رکورد: ۰</span></div>
+  </a>
 </div>
 <script>
-try{const b=+localStorage.getItem('tetris-best-v2')||0;if(b)document.getElementById('tbest').textContent='رکورد: '+b.toLocaleString('fa-IR')}catch(e){}
+try{
+  const t=+localStorage.getItem('tetris-best-v2')||0, g=+localStorage.getItem('g2048-best')||0;
+  if(t)document.getElementById('tbest').textContent='رکورد: '+t.toLocaleString('fa-IR');
+  if(g)document.getElementById('b2048').textContent='رکورد: '+g.toLocaleString('fa-IR');
+}catch(e){}
+// floating background shapes
+const fx=document.getElementById('fx'), cols=['#7a55bd','#1b9bb0','#c87825','#37a06a','#b53a3a','#3560bb','#edc22e','#f65e3b'];
+for(let i=0;i<22;i++){
+  const e=document.createElement('i'); e.className='fl'; const s=14+Math.random()*26;
+  e.style.cssText=`left:${Math.random()*100}%;width:${s}px;height:${s}px;background:${cols[i%cols.length]};border-radius:${i%3===0?'50%':'4px'};animation-duration:${14+Math.random()*16}s;animation-delay:${-Math.random()*20}s`;
+  fx.appendChild(e);
+}
+// page leave transition
+document.querySelectorAll('a.card').forEach(a=>a.addEventListener('click',e=>{
+  if(e.metaKey||e.ctrlKey)return; e.preventDefault(); document.body.classList.add('leaving'); setTimeout(()=>location.href=a.href,260);
+}));
+window.addEventListener('pageshow',()=>document.body.classList.remove('leaving'));
 </script>
 </body>
 </html>

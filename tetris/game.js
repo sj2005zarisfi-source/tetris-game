@@ -57,6 +57,20 @@ let elapsed = 0, lastSec = -1;
 let gravAcc = 0, lockTimer = 0, lockResets = 0, lowestY = 0;
 let clearRows = [], clearTimer = 0;
 let softHeld = false;
+const parts = [];
+function burst(x, y, color, n, spd, size, life) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * 6.283, s = spd * (.3 + Math.random());
+    parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - spd * .4, t: 0, d: life * (.6 + Math.random() * .6), sz: size * (.5 + Math.random()), c: color });
+  }
+}
+function updateParts(dt) {
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i]; p.t += dt;
+    if (p.t >= p.d) { parts.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 900 * dt;
+  }
+}
 let lastTime = 0, clock = 0;
 
 const emptyBoard = () => Array.from({length: ROWS}, () => Array(COLS).fill(null));
@@ -114,6 +128,7 @@ function spawn(type) {
   const m = SHAPES[type].map(r => [...r]);
   piece = { type, m, x: Math.floor((COLS - m[0].length) / 2), y: type === 'I' ? -1 : 0 };
   gravAcc = 0; lockTimer = 0; lockResets = 0; lowestY = piece.y;
+  { const nx = $('next'); nx.classList.remove('slide'); void nx.offsetWidth; nx.classList.add('slide'); }
   while (queue.length < 2) { if (!bag.length) refill(); queue.push(bag.shift()); }
   if (collide(piece.m, piece.x, piece.y)) gameOver();
 }
@@ -140,7 +155,10 @@ function lockPiece() {
   piece.m.forEach((row, r) => row.forEach((v, c) => {
     if (!v) return;
     const y = piece.y + r;
-    if (y < 0) out = true; else board[y][piece.x + c] = piece.type;
+    if (y < 0) out = true; else {
+      board[y][piece.x + c] = piece.type;
+      if (!(piece.m[r + 1] && piece.m[r + 1][c])) burst((piece.x + c + .5) * SIZE, (y + 1) * SIZE, '#cfd8dc', 2, 110, 3, .35);
+    }
   }));
   piece = null;
   if (out) return gameOver();
@@ -149,6 +167,8 @@ function lockPiece() {
   for (let r = 0; r < ROWS; r++) if (board[r].every(Boolean)) rows.push(r);
   if (rows.length) {
     state = 'clearing'; clearRows = rows; clearTimer = 0;
+    const big = rows.length === 4;
+    rows.forEach(r => { for (let c = 0; c < COLS; c++) burst((c + .5) * SIZE, (r + .5) * SIZE, COLORS[board[r][c]], big ? 5 : 3, big ? 460 : 300, 7, .9); });
     if (rows.length === 4) { chime(); shake(); }
   } else spawn();
 }
@@ -189,12 +209,16 @@ function holdPiece() {
   held = cur; canHold = false;
 }
 
+function setText(id, txt) {
+  const el = $(id);
+  if (el.textContent !== txt) { el.textContent = txt; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+}
 function updateHUD() {
   if (score > best) { best = score; localStorage.setItem('tetris-best-v2', best); }
-  $('score').textContent = pad(score, 7);
-  $('lines').textContent = 'LINES-' + pad(lines, 3);
-  $('level').textContent = pad(level, 2);
-  $('best').textContent = pad(best, 7);
+  setText('score', pad(score, 7));
+  setText('lines', 'LINES-' + pad(lines, 3));
+  setText('level', pad(level, 2));
+  setText('best', pad(best, 7));
 }
 function updateTime() {
   const s = Math.floor(elapsed / 1000);
@@ -396,6 +420,8 @@ function draw() {
       ctx.fillRect(0, r * SIZE, W, SIZE);
     });
   }
+  for (const p of parts) { ctx.globalAlpha = Math.max(0, 1 - p.t / p.d); ctx.fillStyle = p.c; ctx.fillRect(p.x - p.sz / 2, p.y - p.sz / 2, p.sz, p.sz); }
+  ctx.globalAlpha = 1;
   if (piece) {
     const gy = ghostY();
     ctx.strokeStyle = COLORS[piece.type]; ctx.lineWidth = 2; ctx.globalAlpha = .55;
@@ -490,7 +516,7 @@ function update(dt) {
 }
 function loop(t) {
   const dt = Math.min(100, t - lastTime || 16); lastTime = t; clock = t;
-  update(dt); draw(); drawBG(dt);
+  update(dt); updateParts(dt); draw(); drawBG(dt);
   requestAnimationFrame(loop);
 }
 

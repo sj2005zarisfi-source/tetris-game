@@ -89,3 +89,29 @@ select{font:inherit;font-size:15px;padding:6px 10px;border-radius:8px;background
 
 .back{position:fixed;top:max(6px,env(safe-area-inset-top));left:6px;z-index:30;font-size:11px;color:#dfe6ea;text-decoration:none;
   background:rgba(0,0,0,.6);border:2px solid #dfe6ea;border-radius:8px;padding:5px 9px}
+
+/* ===== animations ===== */
+@keyframes ovin{from{opacity:0;transform:scale(1.08)}to{opacity:1;transform:none}}
+@keyframes glowt{50%{text-shadow:3px 3px 0 #a33,0 0 22px rgba(255,213,74,.85)}}
+@keyframes gopulse{50%{transform:scale(1.07)}}
+@keyframes vbump{0%{transform:scale(1)}35%{transform:scale(1.35);color:#ffe45c}100%{transform:scale(1)}}
+@keyframes fromleft{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+@keyframes fromright{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+@keyframes dropin{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:none}}
+@keyframes up{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@keyframes frameglow{50%{box-shadow:0 0 0 2px #0a0e11,0 0 52px rgba(110,190,255,.42),inset 0 0 5px #000}}
+@keyframes nextin{from{opacity:0;transform:translateY(-14px) scale(.8)}to{opacity:1;transform:none}}
+.overlay:not(.hidden){animation:ovin .4s ease-out}
+.overlay h1{animation:glowt 2s ease-in-out infinite}
+.go{animation:gopulse 1.6s ease-in-out infinite}
+.val.bump,.banner.bump{animation:vbump .45s}
+.stage .col:first-child{animation:fromleft .6s cubic-bezier(.2,1,.3,1) backwards}
+.stage .col:last-child{animation:fromright .6s cubic-bezier(.2,1,.3,1) backwards}
+.banner{animation:dropin .6s cubic-bezier(.2,1.3,.4,1) backwards}
+.frame{animation:frameglow 4s ease-in-out infinite}
+.controls{animation:up .6s .15s backwards}
+#next.slide{animation:nextin .3s}
+.abtn,.pill{transition:transform .08s,box-shadow .08s,color .1s}
+.back{transition:transform .12s,background .2s}.back:active{transform:scale(.92);background:rgba(255,213,74,.3)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+.frame.shake{animation:shake .45s}
