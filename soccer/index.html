@@ -344,7 +344,9 @@ const BRANDS = [
 const SLOGANS = ['PLAY HARD', 'FEEL THE GAME', 'NEVER GIVE UP', 'SHOOT TO WIN', 'FIRST TO 3', 'GAME ON!'];
 const SCRS = [];
 for (let i = 0; i < 3; i++) { SCRS.push({ x: 26 + i * 320, y: 16, w: 308, h: 30, v: 0 }); SCRS.push({ x: 26 + i * 320, y: 556, w: 308, h: 30, v: 0 }); }
-SCRS.push({ x: 3, y: 54, w: 20, h: 240, v: 1 }, { x: 3, y: 306, w: 20, h: 240, v: 1 }, { x: 977, y: 54, w: 20, h: 240, v: 2 }, { x: 977, y: 306, w: 20, h: 240, v: 2 });
+SCRS.push({ x: 3, y: 54, w: 20, h: 146, v: 1 }, { x: 3, y: 208, w: 20, h: 184, v: 1 }, { x: 3, y: 400, w: 20, h: 146, v: 1 },
+  { x: 977, y: 54, w: 20, h: 146, v: 2 }, { x: 977, y: 208, w: 36, h: 184, v: 2, score: true }, { x: 977, y: 400, w: 20, h: 146, v: 2 });
+const SCOREBR = { n: 'SCORE', a: '#2a4a9a', b: '#0a1030', f: '#ffffff' };
 
 /* ----- crowd: plain dots that bounce ----- */
 const CROWD_COLS = ['#2a64e0', '#e0434d', '#f2f4f7', '#ffd54a', '#252a36', '#79d0ff'];
@@ -393,6 +395,15 @@ function ledPat() {
 }
 const rgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; };
 function ledContent(c, w, h, br, kind, t, idx) {
+  if (kind === 8) {                                          // the one and only score board
+    c.fillStyle = '#050a18'; c.fillRect(0, 0, w, h);
+    const fl = goalFlash > 0 && Math.floor(t * 6) % 2, cy = h / 2 + 1, fs = h * .7;
+    c.fillStyle = '#2a64e0'; c.fillRect(0, 0, 5, h); c.fillStyle = '#e0434d'; c.fillRect(w - 5, 0, 5, h);
+    c.textBaseline = 'middle'; c.textAlign = 'center';
+    c.font = `bold ${fs * .5}px Arial`; c.fillStyle = '#6fb0ff'; c.fillText(tName(0), w * .17, cy, w * .26); c.fillStyle = '#ff7d8c'; c.fillText(tName(1), w * .83, cy, w * .26);
+    c.font = `bold ${fs}px Arial`; c.fillStyle = fl ? '#ffd54a' : '#ffffff'; c.fillText(scores[0] + ' : ' + scores[1], w / 2, cy);
+    return;
+  }
   if (kind === 9) {
     c.fillStyle = Math.floor(t * 6) % 2 ? '#ffd54a' : '#ff3d3d'; c.fillRect(0, 0, w, h);
     c.fillStyle = '#fff'; c.font = `bold ${h * .7}px Arial`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('GOAL!  GOAL!  GOAL!', w / 2, h / 2 + 1); return;
@@ -426,7 +437,7 @@ function drawScreens() {
   const t = now / 1000;
   SCRS.forEach((s, idx) => {
     const lw = s.v ? s.h : s.w, lh = s.v ? s.w : s.h, slot = Math.floor(t / 4.2 + idx * .37), prog = adSeed + idx * 3 + slot * 7;
-    const br = BRANDS[prog % BRANDS.length], kind = goalFlash > 0 ? 9 : (prog >> 1) % 6;
+    const br = s.score ? SCOREBR : BRANDS[prog % BRANDS.length], kind = s.score ? 8 : (goalFlash > 0 ? 9 : (prog >> 1) % 5);
     ctx.save(); ctx.beginPath(); ctx.rect(s.x, s.y, s.w, s.h); ctx.clip();
     ctx.translate(s.x + s.w / 2, s.y + s.h / 2);
     if (s.v === 1) ctx.rotate(-Math.PI / 2); else if (s.v === 2) ctx.rotate(Math.PI / 2);
@@ -686,22 +697,40 @@ function drawBall(c, b) {
   g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = g; c.beginPath(); c.arc(x + sp[0], y + sp[1], r * .4, 0, 7); c.fill();
   c.strokeStyle = 'rgba(0,0,0,.45)'; c.lineWidth = 1; c.beginPath(); c.arc(x, y, r, 0, 7); c.stroke();
 }
+function rayHit(d, ux, uy) {                                   // distance along the shot to the first contact
+  let best = 650;
+  for (const o of B) { if (o === d) continue;
+    const cx = o.x - d.x, cy = o.y - d.y, pr = cx * ux + cy * uy; if (pr <= 0) continue;
+    const R2 = (d.r + o.r) * (d.r + o.r), pp = cx * cx + cy * cy - pr * pr;
+    if (pp < R2) { const t = pr - Math.sqrt(R2 - pp); if (t > 0 && t < best) best = t; }
+  }
+  const x0 = FL + d.r, x1 = FR - d.r, y0 = FT + d.r, y1 = FB - d.r;
+  const tx = ux > 1e-6 ? (x1 - d.x) / ux : ux < -1e-6 ? (x0 - d.x) / ux : 1e9, ty = uy > 1e-6 ? (y1 - d.y) / uy : uy < -1e-6 ? (y0 - d.y) / uy : 1e9;
+  const inMouth = Math.abs(d.y + uy * tx - CY) < GW / 2 - d.r * .4;
+  const tw = inMouth && tx < ty ? 1e9 : Math.min(tx, ty);
+  return Math.max(0, Math.min(best, tw));
+}
 function drawAim() {
   if (!drag) return;
   const d = drag.disc, dx = d.x - drag.px, dy = d.y - drag.py, len = Math.hypot(dx, dy);
-  ctx.save();
-  ctx.strokeStyle = '#ffe57a'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(d.x, d.y, d.r + 6, 0, 7); ctx.stroke();
-  if (len > 2) {
-    const ux = dx / len, uy = dy / len, p = Math.min(len, MAXDRAG) / MAXDRAG;
-    ctx.setLineDash([6, 7]); ctx.lineDashOffset = -now / 25; ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x - ux * Math.min(len, MAXDRAG), d.y - uy * Math.min(len, MAXDRAG)); ctx.stroke();
-    ctx.setLineDash([]);
+  ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(d.x, d.y, d.r + 7, 0, 7); ctx.stroke();      // selected disc
+  if (len > 4) {
+    const ux = dx / len, uy = dy / len, pull = Math.min(len, MAXDRAG), p = pull / MAXDRAG, col = `hsl(${Math.round(130 - 130 * p)},95%,58%)`;
+    const bx = d.x - ux * pull, by = d.y - uy * pull;                                                                                    // pull-back handle
+    ctx.strokeStyle = 'rgba(255,255,255,.45)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(bx, by); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.beginPath(); ctx.arc(bx, by, 6, 0, 7); ctx.fill();
+    ctx.strokeStyle = col; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(d.x, d.y, d.r + 14, -Math.PI / 2, -Math.PI / 2 + p * Math.PI * 2); ctx.stroke();   // power ring
     if (len >= MIN_DRAG) {
-      const L = 50 + p * 170, sx = d.x + ux * (d.r + 8), sy = d.y + uy * (d.r + 8), ex = d.x + ux * (d.r + 8 + L), ey = d.y + uy * (d.r + 8 + L);
-      const col = `hsl(${Math.round(125 - 125 * p)},92%,56%)`;
-      ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 9; ctx.lineCap = 'round';
-      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex - ux * 14, ey - uy * 14); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex - ux * 24 - uy * 15, ey - uy * 24 + ux * 15); ctx.lineTo(ex - ux * 24 + uy * 15, ey - uy * 24 - ux * 15); ctx.closePath(); ctx.fill();
+      const L = rayHit(d, ux, uy), gx = d.x + ux * L, gy = d.y + uy * L;
+      ctx.setLineDash([2, 9]); ctx.lineDashOffset = -now / 40; ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 3;           // guide line to first contact
+      ctx.beginPath(); ctx.moveTo(d.x + ux * (d.r + 4), d.y + uy * (d.r + 4)); ctx.lineTo(gx, gy); ctx.stroke(); ctx.setLineDash([]);
+      ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(gx, gy, d.r, 0, 7); ctx.stroke();            // ghost disc at contact
+      const a0 = d.r + 12, a1 = a0 + 28 + p * 62;                                                                                       // power arrow
+      ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 6;
+      ctx.beginPath(); ctx.moveTo(d.x + ux * a0, d.y + uy * a0); ctx.lineTo(d.x + ux * (a1 - 8), d.y + uy * (a1 - 8)); ctx.stroke();
+      const hx = d.x + ux * a1, hy = d.y + uy * a1;
+      ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(hx - ux * 16 - uy * 9, hy - uy * 16 + ux * 9); ctx.lineTo(hx - ux * 16 + uy * 9, hy - uy * 16 - ux * 9); ctx.closePath(); ctx.fill();
     }
   }
   ctx.restore();
