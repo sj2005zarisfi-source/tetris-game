@@ -27,8 +27,9 @@ a.card{display:block;text-decoration:none;color:inherit;border-radius:20px;overf
 a.card:nth-child(1){animation-delay:.25s}a.card:nth-child(2){animation-delay:.4s}a.card:nth-child(3){animation-delay:.55s}a.card:nth-child(4){animation-delay:.7s}
 @media (hover:hover){a.card:hover{transform:translateY(-8px) scale(1.02);border-color:#ffe57a;box-shadow:0 18px 40px rgba(0,0,0,.55),0 0 24px rgba(255,229,122,.25)}}
 a.card:active{transform:scale(.96);border-color:#ffe57a}
-.thumb{height:170px;position:relative;overflow:hidden;transition:transform .4s}
+.thumb{height:200px;background:#000;position:relative;overflow:hidden;transition:transform .4s}
 a.card:hover .thumb{transform:scale(1.06)}
+.thumb canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .t1{background:radial-gradient(circle at 50% 120%,#1b2250,#000)}
 .t2{background:repeating-linear-gradient(90deg,#2f8a3b 0 12.5%,#369a43 12.5% 25%)}
 .t3{background:#faf8ef}
@@ -65,43 +66,29 @@ a.card:hover .thumb{transform:scale(1.06)}
 <p class="sub">یکی را انتخاب کن</p>
 <div class="grid">
   <a class="card" href="tetris/">
-    <div class="thumb t1">
-      <i class="blk" style="left:calc(50% - 52px);top:30px;background:#7a55bd;animation-delay:.0s"></i><i class="blk" style="left:calc(50% - 26px);top:30px;background:#7a55bd;animation-delay:.1s"></i><i class="blk" style="left:calc(50% - 0px);top:30px;background:#7a55bd;animation-delay:.2s"></i><i class="blk" style="left:calc(50% - 26px);top:56px;background:#7a55bd;animation-delay:.3s"></i>
-      <i class="blk" style="left:calc(50% - 52px);top:118px;background:#1b9bb0;animation-delay:.5s"></i><i class="blk" style="left:calc(50% - 26px);top:118px;background:#1b9bb0;animation-delay:.6s"></i><i class="blk" style="left:calc(50% - 0px);top:118px;background:#1b9bb0;animation-delay:.7s"></i><i class="blk" style="left:calc(50% + 26px);top:118px;background:#1b9bb0;animation-delay:.8s"></i>
-      <i class="blk" style="left:calc(50% - 78px);top:144px;background:#c87825"></i><i class="blk" style="left:calc(50% - 52px);top:144px;background:#bf9a17"></i><i class="blk" style="left:calc(50% - 26px);top:144px;background:#37a06a"></i><i class="blk" style="left:calc(50% - 0px);top:144px;background:#b53a3a"></i><i class="blk" style="left:calc(50% + 26px);top:144px;background:#3560bb"></i><i class="blk" style="left:calc(50% + 52px);top:144px;background:#c87825"></i>
-    </div>
+    <div class="thumb"><canvas data-p="tetris"></canvas></div>
     <div class="info"><h2>تتریس</h2><p>نسخه کلاسیک با امتیازدهی NES، سطح‌بندی و کنترل لمسی.</p><span class="badge" id="tbest">رکورد: ۰</span></div>
   </a>
   <a class="card" href="soccer/">
-    <div class="thumb t2">
-      <i class="disc" style="left:18%;top:62px;background:#2a64e0"></i><i class="disc" style="left:30%;top:20px;background:#2a64e0;animation-delay:.4s"></i><i class="disc" style="left:30%;top:104px;background:#2a64e0;animation-delay:.8s"></i>
-      <i class="disc" style="right:18%;top:62px;background:#e0434d;border-color:#f6dc86;animation-delay:.2s"></i><i class="disc" style="right:30%;top:20px;background:#e0434d;border-color:#f6dc86;animation-delay:.6s"></i><i class="disc" style="right:30%;top:104px;background:#e0434d;border-color:#f6dc86;animation-delay:1s"></i>
-      <i class="ball"></i>
-    </div>
+    <div class="thumb"><canvas data-p="soccer"></canvas></div>
     <div class="info"><h2>فوتبال دیسکی</h2><p>دیسک‌ها را بکش و رها کن؛ اولین نفری که به ۳ گل برسد برنده است. تک‌نفره یا دو نفره.</p><span class="badge">انتخاب ترکیب · ۳ سطح کامپیوتر</span></div>
   </a>
   <a class="card" href="2048/">
-    <div class="thumb t3">
-      <i class="mt" style="left:calc(50% - 70px);top:36px;background:#eee4da">2</i><i class="mt" style="left:calc(50% - 22px);top:36px;background:#f2b179;color:#fff;animation-delay:.3s">8</i><i class="mt" style="left:calc(50% + 26px);top:36px;background:#f65e3b;color:#fff;animation-delay:.6s">64</i>
-      <i class="mt" style="left:calc(50% - 70px);top:86px;background:#ede0c8;animation-delay:.9s">4</i><i class="mt" style="left:calc(50% - 22px);top:86px;background:#edcf72;color:#fff;animation-delay:1.2s">128</i><i class="mt" style="left:calc(50% + 26px);top:86px;background:#edc22e;color:#fff;font-size:17px;animation-delay:1.5s">2048</i>
-    </div>
+    <div class="thumb"><canvas data-p="g2048"></canvas></div>
     <div class="info"><h2>2048</h2><p>کاشی‌های هم‌شماره را بکش و ترکیب کن تا به ۲۰۴۸ برسی. دکمه بازگشت (UNDO) هم دارد.</p><span class="badge" id="b2048">رکورد: ۰</span></div>
   </a>
   <a class="card" href="minesweeper/">
-    <div class="thumb t4">
-      <i class="ms" style="left:calc(50% - 75px);top:30px"></i><i class="ms" style="left:calc(50% - 41px);top:30px;animation-delay:.3s"></i><i class="ms" style="left:calc(50% - 7px);top:30px;animation-delay:.6s"></i><i class="ms" style="left:calc(50% + 27px);top:30px;animation-delay:.9s"></i>
-      <i class="ms" style="left:calc(50% - 75px);top:64px;animation-delay:1.2s"></i><i class="msn" style="left:calc(50% - 41px);top:64px">1</i><i class="msn" style="left:calc(50% - 7px);top:64px">2</i><i class="ms" style="left:calc(50% + 27px);top:64px;animation-delay:.2s"></i>
-      <i class="ms" style="left:calc(50% - 75px);top:98px;animation-delay:.5s"></i><i class="msn" style="left:calc(50% - 41px);top:98px">1</i><i class="msn" style="left:calc(50% - 7px);top:98px">⚑</i><i class="ms" style="left:calc(50% + 27px);top:98px;animation-delay:.8s"></i>
-    </div>
-    <div class="info"><h2>مین‌روب</h2><p>سه حالت Normal، Hard و Extreme، تم‌های رنگی قابل تغییر و حالت دو نفره: هر کس بمب بیشتری پیدا کند برنده است.</p><span class="badge" id="bms">بهترین زمان: —</span></div>
+    <div class="thumb"><canvas data-p="mines"></canvas></div>
+    <div class="info"><h2>مین‌روب</h2><p>سه حالت Normal، Hard و Extreme، زوم، تم‌های رنگی و جدول زمان‌ها. حالت دو نفره: هر کس بمب بیشتری پیدا کند برنده است.</p><span class="badge" id="bms">بهترین زمان: —</span></div>
   </a>
 </div>
+<script src="previews.js"></script>
 <script>
 try{
   const t=+localStorage.getItem('tetris-best-v2')||0, g=+localStorage.getItem('g2048-best')||0;
   if(t)document.getElementById('tbest').textContent='رکورد: '+t.toLocaleString('fa-IR');
   if(g)document.getElementById('b2048').textContent='رکورد: '+g.toLocaleString('fa-IR');
-  const m=+localStorage.getItem('ms-best-0')||0; if(m){const s=Math.floor(m/1000);document.getElementById('bms').textContent='بهترین زمان (Normal): '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+  const rc=JSON.parse(localStorage.getItem('ms-records')||'[]').filter(r=>r.d===0).map(r=>r.t); if(rc.length){const s=Math.floor(Math.min(...rc)/1000);document.getElementById('bms').textContent='بهترین زمان (Normal): '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
 }catch(e){}
 // floating background shapes
 const fx=document.getElementById('fx'), cols=['#7a55bd','#1b9bb0','#c87825','#37a06a','#b53a3a','#3560bb','#edc22e','#f65e3b'];
