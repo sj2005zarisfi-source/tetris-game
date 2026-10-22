@@ -244,7 +244,7 @@ function soccer() {
     const sorted = B.slice().sort((a, b) => a.y - b.y);
     for (const b of sorted) {
       if (b.ball) { g.fillStyle = 'rgba(0,0,0,.35)'; g.beginPath(); g.ellipse(b.x + 2, b.y + 4, b.r, b.r * .9, 0, 0, 7); g.fill(); const k = g.createRadialGradient(b.x - 4, b.y - 5, 1, b.x, b.y, b.r); k.addColorStop(0, '#fff'); k.addColorStop(1, '#c9ced3'); g.fillStyle = k; g.beginPath(); g.arc(b.x, b.y, b.r, 0, 7); g.fill();
-        g.save(); g.translate(b.x, b.y); g.rotate(b.rot); g.fillStyle = '#222'; g.beginPath(); for (let i = 0; i < 5; i++) { const a = i * 1.2566 - 1.5708; g.lineTo(Math.cos(a) * b.r * .38, Math.sin(a) * b.r * .38); } g.fill(); for (let i = 0; i < 5; i++) { const a = i * 1.2566 - 1.5708 + .63; g.beginPath(); g.arc(Math.cos(a) * b.r * .86, Math.sin(a) * b.r * .86, b.r * .22, 0, 7); g.fill(); } g.restore(); }
+        g.save(); g.beginPath(); g.arc(b.x, b.y, b.r, 0, 7); g.clip(); for (let i = 0; i < 4; i++) { const an = b.rot + i * 1.57, px = b.x + Math.cos(an) * b.r * .62, py = b.y + Math.sin(an) * b.r * .62; g.save(); g.translate(px, py); g.rotate(an); g.scale(.7, 1); g.fillStyle = '#1d46b8'; g.strokeStyle = '#d6b25a'; g.lineWidth = 1.2; g.beginPath(); for (let q = 0; q < 10; q++) { const aa = -Math.PI / 2 + q * Math.PI / 5, rr2 = q % 2 ? b.r * .22 : b.r * .5; g.lineTo(Math.cos(aa) * rr2, Math.sin(aa) * rr2); } g.closePath(); g.fill(); g.stroke(); g.restore(); } g.restore(); }
       else disc(g, b.x, b.y, b.r, b.team);
     }
     const vg = g.createRadialGradient(CX, CY, 260, CX, CY, 640); vg.addColorStop(0, 'rgba(0,10,20,0)'); vg.addColorStop(1, 'rgba(0,10,20,.55)'); g.fillStyle = vg; g.fillRect(-60, -40, 1120, 690);

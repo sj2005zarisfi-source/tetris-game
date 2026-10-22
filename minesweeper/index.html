@@ -1,32 +1,32 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" id="tc" content="#04070f">
-<title>Minesweeper</title>
+<title>مین‌روب</title>
 <style>
 :root{--bg:#04070f;--tile:#2f80ff;--fg:#eaf1ff;--line:rgba(234,241,255,.28)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none;touch-action:none;user-select:none;-webkit-user-select:none;
-  background:var(--bg);color:var(--fg);font-family:Roboto,"Segoe UI","Helvetica Neue",Arial,sans-serif;font-weight:300;transition:background .4s,color .4s}
+  background:var(--bg);color:var(--fg);font-family:Vazirmatn,Tahoma,Roboto,"Segoe UI",Arial,sans-serif;font-weight:400;transition:background .4s,color .4s}
 .screen{position:fixed;inset:0;display:flex;flex-direction:column;max-width:600px;margin:0 auto;padding:max(8px,env(safe-area-inset-top)) 14px max(10px,env(safe-area-inset-bottom));animation:pageIn .45s}
 .hidden{display:none!important}
 button{font:inherit;color:inherit;cursor:pointer}
 .ico{width:44px;height:44px;border-radius:50%;border:0;background:transparent;color:var(--fg);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:background .2s,transform .15s}
 .ico:active{transform:scale(.88);background:var(--line)}
 .ico svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.pill{height:52px;border-radius:40px;border:1.5px solid var(--line);background:transparent;color:var(--fg);font-size:17px;font-weight:300;transition:background .2s,transform .12s;padding:0 22px}
+.pill{height:52px;border-radius:40px;border:1.5px solid var(--line);background:transparent;color:var(--fg);font-size:17px;font-weight:400;transition:background .2s,transform .12s;padding:0 22px}
 .pill:active{transform:scale(.97);background:var(--line)}
 .pill.primary{background:var(--tile);color:var(--bg);border-color:var(--tile);font-weight:500}
 /* ---- menu ---- */
 #menu{overflow-y:auto;touch-action:pan-y}
 .wrap{margin:auto;width:100%;max-width:420px;display:flex;flex-direction:column;gap:18px;padding:14px 0}
-.wrap h1{margin:0;text-align:center;font-size:38px;font-weight:200;letter-spacing:1px;animation:drop .6s cubic-bezier(.2,1.5,.4,1)}
+.wrap h1{margin:0;text-align:center;font-size:40px;font-weight:300;animation:drop .6s cubic-bezier(.2,1.5,.4,1)}
 .wrap h1 b{color:var(--tile);font-weight:400}
 .grp{display:flex;flex-direction:column;gap:8px;animation:fadeUp .5s backwards}
 .grp:nth-child(2){animation-delay:.08s}.grp:nth-child(3){animation-delay:.16s}.grp:nth-child(4){animation-delay:.24s}
-.grp label{font-size:13px;opacity:.6;letter-spacing:1.5px;text-transform:uppercase}
+.grp label{font-size:14px;opacity:.65}
 .seg{display:flex;border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
 .seg button{flex:1;border:0;background:transparent;padding:12px 4px;font-size:16px;transition:background .25s,color .25s;line-height:1.3}
 .seg button small{display:block;font-size:11px;opacity:.65}
@@ -47,15 +47,15 @@ button{font:inherit;color:inherit;cursor:pointer}
 .chip.on{background:var(--tile);color:var(--bg);border-color:var(--tile);font-weight:500}
 .tbl{flex:1;overflow-y:auto;touch-action:pan-y}
 table{width:100%;border-collapse:collapse;font-size:15px}
-th{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;opacity:.55;font-weight:400;text-align:left;padding:6px 8px;position:sticky;top:0;background:var(--bg)}
+th{font-size:13px;opacity:.6;font-weight:400;text-align:start;padding:6px 8px;position:sticky;top:0;background:var(--bg)}
 td{padding:11px 8px;border-top:1px solid var(--line)}
 td:nth-child(2){font-variant-numeric:tabular-nums}
 tr.hi td{background:rgba(127,127,127,.16);color:var(--tile);font-weight:500}
 .empty{text-align:center;opacity:.55;padding:40px 10px}
 /* ---- game ---- */
 #game header{display:flex;align-items:center;justify-content:space-between;height:52px;flex:0 0 auto}
-#timer{font-size:16px;letter-spacing:.5px;font-weight:400}
-.scores{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:400;padding:0 4px 6px;flex:0 0 auto}
+#timer{font-size:17px;font-weight:400;direction:ltr}
+.scores{direction:ltr;display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:400;padding:0 4px 6px;flex:0 0 auto}
 .scores .p{display:flex;align-items:center;gap:8px;padding:5px 14px;border-radius:30px;border:1.5px solid transparent;transition:all .25s}
 .scores .p b{font-size:21px;font-weight:500}
 .scores .p i{width:11px;height:11px;border-radius:50%}
@@ -65,7 +65,7 @@ main{position:relative;flex:1 1 auto;min-height:0}
 canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
 .zchip{position:absolute;top:6px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.72);color:#fff;border-radius:30px;padding:6px 8px 6px 14px;font-size:13px;white-space:nowrap;animation:drop .35s}
 .zchip button{border:0;background:rgba(255,255,255,.18);border-radius:20px;padding:5px 12px;font-size:12px}
-.dock{flex:0 0 76px;display:flex;justify-content:flex-end;align-items:center;gap:12px;padding-right:2px}
+.dock{direction:ltr;flex:0 0 76px;display:flex;justify-content:flex-end;align-items:center;gap:12px;padding-right:2px}
 .fab{width:62px;height:62px;border-radius:50%;border:1.5px solid var(--line);background:rgba(10,10,14,.85);color:#fff;display:flex;align-items:center;justify-content:center;
   transition:background .25s,transform .15s,color .25s,box-shadow .25s;box-shadow:0 4px 14px rgba(0,0,0,.35)}
 .fab svg{width:28px;height:28px;fill:currentColor}
@@ -76,7 +76,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;displa
 .ov.light{background:rgba(255,255,255,.6)}
 .card{width:min(90%,380px);max-height:90%;overflow:auto;background:var(--bg);border:1.5px solid var(--line);border-radius:26px;padding:24px 20px 18px;text-align:center;display:flex;flex-direction:column;gap:12px;
   box-shadow:0 20px 60px rgba(0,0,0,.5);animation:pop .45s cubic-bezier(.2,1.5,.4,1)}
-.card h2{margin:0;font-size:30px;font-weight:400;color:var(--tile)}
+.card h2{margin:0;font-size:28px;font-weight:600;color:var(--tile)}
 .card p{margin:0;font-size:15px;opacity:.85;line-height:1.7;white-space:pre-line}
 .card table{font-size:14px}.card td{padding:8px}
 @keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -92,48 +92,48 @@ canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;displa
 
 <section class="screen" id="menu">
   <div class="wrap">
-    <h1>Mine<b>sweeper</b></h1>
-    <div class="grp"><label>Difficulty</label>
+    <h1>مین‌<b>روب</b></h1>
+    <div class="grp"><label>سختی</label>
       <div class="seg" id="segDiff"></div><div class="note" id="diffNote"></div></div>
-    <div class="grp"><label>Mode</label>
-      <div class="seg" id="segMode"><button data-v="0">Solo</button><button data-v="1">2 Players</button></div><div class="note" id="modeNote"></div></div>
-    <div class="grp"><label>Color</label><div class="colors" id="colors"></div></div>
+    <div class="grp"><label>حالت</label>
+      <div class="seg" id="segMode"><button data-v="0">تک‌نفره</button><button data-v="1">دو نفره</button></div><div class="note" id="modeNote"></div></div>
+    <div class="grp"><label>رنگ</label><div class="colors" id="colors"></div></div>
     <div class="btns">
-      <button class="pill primary" id="bPlay">Start game</button>
-      <button class="pill hidden" id="bResume">Continue game</button>
-      <button class="pill" id="bRec">Best times</button>
-      <a class="link" href="../">← All games</a>
+      <button class="pill primary" id="bPlay">شروع بازی</button>
+      <button class="pill hidden" id="bResume">ادامه بازی</button>
+      <button class="pill" id="bRec">بهترین زمان‌ها</button>
+      <a class="link" href="../">→ همه بازی‌ها</a>
     </div>
   </div>
 </section>
 
 <section class="screen hidden" id="rec">
-  <div class="rhead"><button class="ico" id="rBack" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M20 12H5M11 5l-7 7 7 7"/></svg></button><h2>Best times</h2></div>
+  <div class="rhead"><button class="ico" id="rBack" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M4 12h15M13 5l7 7-7 7"/></svg></button><h2>بهترین زمان‌ها</h2></div>
   <div class="chips" id="rChips"></div>
   <div class="tbl" id="rTable"></div>
-  <div class="btns" style="padding-top:10px"><button class="pill" id="rClear">Clear all times</button></div>
+  <div class="btns" style="padding-top:10px"><button class="pill" id="rClear">پاک کردن همه زمان‌ها</button></div>
 </section>
 
 <section class="screen hidden" id="game">
   <header>
-    <button class="ico" id="gBack" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M20 12H5M11 5l-7 7 7 7"/></svg></button>
-    <div id="timer">0M 00S</div>
+    <button class="ico" id="gBack" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 12h15M13 5l7 7-7 7"/></svg></button>
+    <div id="timer">۰۰:۰۰</div>
     <button class="ico" id="gRestart" aria-label="Restart"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.5-5.8M20 4v5h-5"/></svg></button>
   </header>
   <div class="scores hidden" id="scores">
-    <div class="p p0" id="sc0"><i></i>P1 <b id="v0">0</b></div>
-    <div class="p p1" id="sc1">P2 <b id="v1">0</b><i></i></div>
+    <div class="p p0" id="sc0"><i></i>بازیکن ۱ <b id="v0">۰</b></div>
+    <div class="p p1" id="sc1">بازیکن ۲ <b id="v1">۰</b><i></i></div>
   </div>
   <main id="stage">
     <canvas id="cv"></canvas>
-    <div class="zchip hidden" id="zchip">Zoom: drag · pinch · double-tap <button id="zReset">Reset</button></div>
+    <div class="zchip hidden" id="zchip">زوم: بکش · دو انگشتی · دوبار ضربه <button id="zReset">ریست</button></div>
   </main>
   <div class="dock">
     <button class="fab" id="fabZoom" aria-label="Zoom mode"><svg class="st" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></button>
     <button class="fab" id="fab" aria-label="Flag mode"><svg viewBox="0 0 24 24"><path d="M6 3h2v18H6zM9 4l10 4.2L9 12.4z"/></svg></button>
   </div>
   <div class="ov hidden" id="ov"><div class="card"><h2 id="ovT"></h2><p id="ovP"></p><div id="ovTable"></div>
-    <button class="pill primary" id="ovA">Play again</button><button class="pill" id="ovB">View board</button><button class="pill" id="ovC">Menu</button></div></div>
+    <button class="pill primary" id="ovA">بازی دوباره</button><button class="pill" id="ovB">دیدن تخته</button><button class="pill" id="ovC">منو</button></div></div>
 </section>
 
 <script>
@@ -143,23 +143,23 @@ const $ = id => document.getElementById(id);
 
 /* ================= data ================= */
 const THEMES = [
-  { n: 'Blue',   bg: '#04070f', tile: '#2f80ff', fg: '#eaf1ff' },
-  { n: 'Pink',   bg: '#050206', tile: '#d04fb0', fg: '#ffffff' },
-  { n: 'Orange', bg: '#353230', tile: '#f08023', fg: '#ffffff' },
-  { n: 'Green',  bg: '#040a06', tile: '#2fb24a', fg: '#ecfff0' },
-  { n: 'Red',    bg: '#0a0405', tile: '#e0485a', fg: '#fff0f1' },
-  { n: 'Gold',   bg: '#13110b', tile: '#c9a64a', fg: '#fff6dc' },
-  { n: 'Teal',   bg: '#03090a', tile: '#1fb5b0', fg: '#e8ffff' },
-  { n: 'Purple', bg: '#07040d', tile: '#8b5cf6', fg: '#f3edff' },
-  { n: 'Sky',    bg: '#eef3fb', tile: '#5b8def', fg: '#1d2a44', light: 1 },
-  { n: 'Sand',   bg: '#f3eee4', tile: '#c8b98c', fg: '#3a352c', light: 1 },
-  { n: 'Rose',   bg: '#faf0f1', tile: '#d5606f', fg: '#43202a', light: 1 }
+  { n: 'آبی',   bg: '#04070f', tile: '#2f80ff', fg: '#eaf1ff' },
+  { n: 'صورتی',   bg: '#050206', tile: '#d04fb0', fg: '#ffffff' },
+  { n: 'نارنجی', bg: '#353230', tile: '#f08023', fg: '#ffffff' },
+  { n: 'سبز',  bg: '#040a06', tile: '#2fb24a', fg: '#ecfff0' },
+  { n: 'قرمز',    bg: '#0a0405', tile: '#e0485a', fg: '#fff0f1' },
+  { n: 'طلایی',   bg: '#13110b', tile: '#c9a64a', fg: '#fff6dc' },
+  { n: 'فیروزه‌ای',   bg: '#03090a', tile: '#1fb5b0', fg: '#e8ffff' },
+  { n: 'بنفش', bg: '#07040d', tile: '#8b5cf6', fg: '#f3edff' },
+  { n: 'آسمانی',    bg: '#eef3fb', tile: '#5b8def', fg: '#1d2a44', light: 1 },
+  { n: 'شنی',   bg: '#f3eee4', tile: '#c8b98c', fg: '#3a352c', light: 1 },
+  { n: 'رزی',   bg: '#faf0f1', tile: '#d5606f', fg: '#43202a', light: 1 }
 ];
 // odd mine counts so a 2-player game can never end in a tie
 const DIFFS = [
-  { n: 'Normal',  c: 10, r: 15, m: 31 },
-  { n: 'Hard',    c: 14, r: 22, m: 69 },
-  { n: 'Extreme', c: 18, r: 30, m: 125 }
+  { n: 'معمولی',  c: 10, r: 15, m: 31 },
+  { n: 'سخت',    c: 14, r: 22, m: 69 },
+  { n: 'اکستریم', c: 18, r: 30, m: 125 }
 ];
 const P_COL = ['#4fa0ff', '#ff5c70'];
 const ld = (k, d) => { const v = +localStorage.getItem(k); return Number.isFinite(v) && localStorage.getItem(k) !== null ? v : d; };
@@ -183,8 +183,10 @@ const vib = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e
 const elapsedNow = () => acc + (runAt ? performance.now() - runAt : 0);
 const startTimer = () => { if (!runAt) runAt = performance.now(); };
 const pauseTimer = () => { if (runAt) { acc += performance.now() - runAt; runAt = 0; } };
-const fmt = ms => { const s = Math.floor(ms / 1000); return Math.floor(s / 60) + 'M ' + String(s % 60).padStart(2, '0') + 'S'; };
-const fmtD = ts => { const d = new Date(ts), p = n => String(n).padStart(2, '0'); return p(d.getMonth() + 1) + '/' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()); };
+const fa = v => String(v).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const fmt = ms => { const s = Math.floor(ms / 1000); return fa(Math.floor(s / 60)) + ' دقیقه و ' + fa(s % 60) + ' ثانیه'; };
+const fmtS = ms => { const s = Math.floor(ms / 1000); return fa(String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0')); };
+const fmtD = ts => { const d = new Date(ts), p = n => String(n).padStart(2, '0'); return fa(p(d.getMonth() + 1) + '/' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes())); };
 
 function nbrs(i) {
   const r = (i / C) | 0, c = i % C, out = [];
@@ -200,7 +202,7 @@ function newGame() {
   owner = new Int8Array(N).fill(-1); revT = new Float64Array(N); flagT = new Float64Array(N);
   started = over = won = false; revCount = flagCount = found = 0; score = [0, 0]; turn = 0; acc = 0; runAt = 0; boom = -1; parts.length = 0; fx.length = 0;
   view.z = 1; view.px = 0; view.py = 0; setZoom(false); setFlagMode(false);
-  $('ov').classList.add('hidden'); $('timer').textContent = '0M 00S';
+  $('ov').classList.add('hidden'); $('timer').textContent = '۰۰:۰۰';
   $('scores').classList.toggle('hidden', !twoP()); $('fab').classList.toggle('hidden', twoP());
   layout(); hud(); invalidate(600);
 }
@@ -238,7 +240,7 @@ function hitMine(i) {
   const r0 = (i / C) | 0, c0 = i % C;
   for (let k = 0; k < N; k++) if (mine[k] && !flag[k] && !rev[k]) { rev[k] = 1; revT[k] = now + 180 + Math.hypot(((k / C) | 0) - r0, (k % C) - c0) * 45; }
   rev[i] = 1; revT[i] = now; hud(); invalidate(2600);
-  setTimeout(() => showOv('Boom!', 'You hit a mine.\n' + DIFFS[di].n + ' · ' + fmt(acc), false, 0), 1400);
+  setTimeout(() => showOv('بوم!', 'روی مین رفتی.\n' + DIFFS[di].n + ' · ' + fmt(acc), false, 0), 1400);
 }
 function win() {
   over = won = true; pauseTimer(); vib([30, 30, 30, 30, 90]);
@@ -246,13 +248,13 @@ function win() {
   flagCount = M; confetti();
   lastRec = Date.now(); recs.push({ id: lastRec, d: di, t: Math.round(acc), ts: lastRec }); saveRecs();
   hud(); invalidate(3500);
-  setTimeout(() => showOv('Cleared!', DIFFS[di].n + ' · ' + fmt(acc), true, lastRec), 900);
+  setTimeout(() => showOv('تخته پاک شد!', DIFFS[di].n + ' · ' + fmt(acc), true, lastRec), 900);
 }
 function endTwo() {
   over = true; pauseTimer(); const w = score[0] > score[1] ? 0 : 1; turn = w;
   for (let k = 0; k < N; k++) if (mine[k] && !rev[k]) { rev[k] = 1; revT[k] = now + 250 + Math.random() * 500; }
   confetti(); hud(); invalidate(3500);
-  setTimeout(() => showOv('Player ' + (w + 1) + ' wins!', score[0] + '  –  ' + score[1] + '\n' + DIFFS[di].n + ' · ' + fmt(acc), true, -1), 1100);
+  setTimeout(() => showOv('بازیکن ' + fa(w + 1) + ' برنده شد!', fa(score[0]) + '  –  ' + fa(score[1]) + '\n' + DIFFS[di].n + ' · ' + fmt(acc), true, -1), 1100);
 }
 function toggleFlag(i) {
   if (over || rev[i] || twoP() || !started) return;
@@ -273,14 +275,14 @@ function show(name) {
 }
 const bestOf = d => recs.filter(r => r.d === d).reduce((m, r) => Math.min(m, r.t), Infinity);
 function tableHTML(list, hi) {
-  if (!list.length) return '<div class="empty">No finished games yet.<br>Clear a board to set a time.</div>';
+  if (!list.length) return '<div class="empty">هنوز بازی تمام‌شده‌ای نداری.<br>یک تخته را کامل پاک کن تا زمانت ثبت شود.</div>';
   const best = DIFFS.map((_, d) => bestOf(d));
-  return '<table><thead><tr><th>Difficulty</th><th>Time</th><th>Date</th></tr></thead><tbody>' +
+  return '<table><thead><tr><th>سختی</th><th>زمان</th><th>تاریخ</th></tr></thead><tbody>' +
     list.map(r => `<tr class="${r.id === hi ? 'hi' : ''}"><td>${DIFFS[r.d].n}</td><td>${fmt(r.t)}${r.t === best[r.d] ? ' ★' : ''}</td><td>${fmtD(r.ts)}</td></tr>`).join('') + '</tbody></table>';
 }
 let rf = -1;
 function renderRec() {
-  $('rChips').innerHTML = ['All', ...DIFFS.map(d => d.n)].map((n, k) => `<button class="chip ${k - 1 === rf ? 'on' : ''}" data-f="${k - 1}">${n}</button>`).join('');
+  $('rChips').innerHTML = ['همه', ...DIFFS.map(d => d.n)].map((n, k) => `<button class="chip ${k - 1 === rf ? 'on' : ''}" data-f="${k - 1}">${n}</button>`).join('');
   $('rChips').querySelectorAll('.chip').forEach(b => b.onclick = () => { rf = +b.dataset.f; renderRec(); });
   $('rTable').innerHTML = tableHTML(recs.filter(r => rf < 0 || r.d === rf).slice().reverse().slice(0, 100), 0);
 }
@@ -291,18 +293,18 @@ function showOv(title, p, good, hi) {
   $('ov').classList.remove('hidden');
 }
 function hud() {
-  $('v0').textContent = score[0]; $('v1').textContent = score[1];
+  $('v0').textContent = fa(score[0]); $('v1').textContent = fa(score[1]);
   $('sc0').classList.toggle('act', twoP() && turn === 0 && !over); $('sc1').classList.toggle('act', twoP() && turn === 1 && !over);
 }
-setInterval(() => { if (!$('game').classList.contains('hidden')) $('timer').textContent = fmt(elapsedNow()); }, 250);
+setInterval(() => { if (!$('game').classList.contains('hidden')) $('timer').textContent = fmtS(elapsedNow()); }, 250);
 
 function refreshMenu() {
-  $('segDiff').innerHTML = DIFFS.map((d, k) => `<button data-v="${k}" class="${k === di ? 'on' : ''}">${d.n}<small>${d.c * d.r} tiles</small></button>`).join('');
+  $('segDiff').innerHTML = DIFFS.map((d, k) => `<button data-v="${k}" class="${k === di ? 'on' : ''}">${d.n}<small>${fa(d.c * d.r)} خانه</small></button>`).join('');
   $('segDiff').querySelectorAll('button').forEach(b => b.onclick = () => { di = +b.dataset.v; localStorage.setItem('ms-diff', di); refreshMenu(); });
   $('segMode').querySelectorAll('button').forEach(b => { b.classList.toggle('on', +b.dataset.v === mi); b.onclick = () => { mi = +b.dataset.v; localStorage.setItem('ms-mode', mi); refreshMenu(); }; });
   const d = DIFFS[di];
-  $('diffNote').textContent = d.c + ' × ' + d.r + ' · ' + d.m + ' mines';
-  $('modeNote').textContent = twoP() ? 'Hitting a mine scores a point — most mines wins' : 'Clear the board without hitting a mine';
+  $('diffNote').textContent = fa(d.c) + ' × ' + fa(d.r) + ' · ' + fa(d.m) + ' مین';
+  $('modeNote').textContent = twoP() ? 'روی مین بروی نمی‌بازی، یک امتیاز می‌گیری — هر کس مین بیشتری پیدا کند برنده است' : 'تخته را بدون خوردن به مین پاک کن';
   $('bResume').classList.toggle('hidden', !(started && !over));
   document.querySelectorAll('#colors .dot').forEach((x, k) => x.classList.toggle('sel', k === ti));
 }
@@ -474,7 +476,7 @@ $('bPlay').onclick = () => { newGame(); show('game'); };
 $('bResume').onclick = () => show('game');
 $('bRec').onclick = () => show('rec');
 $('rBack').onclick = () => show('menu');
-$('rClear').onclick = () => { if (recs.length && confirm('Delete all saved times?')) { recs = []; saveRecs(); renderRec(); } };
+$('rClear').onclick = () => { if (recs.length && confirm('همه‌ی زمان‌های ذخیره‌شده پاک شوند؟')) { recs = []; saveRecs(); renderRec(); } };
 $('gBack').onclick = () => show('menu');
 $('gRestart').onclick = newGame;
 $('ovA').onclick = newGame; $('ovB').onclick = () => $('ov').classList.add('hidden'); $('ovC').onclick = () => show('menu');

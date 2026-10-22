@@ -343,9 +343,9 @@ const BRANDS = [
 ];
 const SLOGANS = ['PLAY HARD', 'FEEL THE GAME', 'NEVER GIVE UP', 'SHOOT TO WIN', 'FIRST TO 3', 'GAME ON!'];
 const SCRS = [];
-for (let i = 0; i < 3; i++) { SCRS.push({ x: 26 + i * 320, y: 16, w: 308, h: 30, v: 0 }); SCRS.push({ x: 26 + i * 320, y: 556, w: 308, h: 30, v: 0 }); }
+for (let i = 0; i < 3; i++) { SCRS.push(i === 1 ? { x: 26 + i * 320, y: 12, w: 308, h: 34, v: 0, score: true } : { x: 26 + i * 320, y: 16, w: 308, h: 30, v: 0 }); SCRS.push({ x: 26 + i * 320, y: 556, w: 308, h: 30, v: 0 }); }
 SCRS.push({ x: 3, y: 54, w: 20, h: 146, v: 1 }, { x: 3, y: 208, w: 20, h: 184, v: 1 }, { x: 3, y: 400, w: 20, h: 146, v: 1 },
-  { x: 977, y: 54, w: 40, h: 146, v: 2, score: true }, { x: 977, y: 208, w: 20, h: 184, v: 2 }, { x: 977, y: 400, w: 20, h: 146, v: 2 });
+  { x: 977, y: 54, w: 20, h: 146, v: 2 }, { x: 977, y: 208, w: 20, h: 184, v: 2 }, { x: 977, y: 400, w: 20, h: 146, v: 2 });
 const SCOREBR = { n: 'SCORE', a: '#2a4a9a', b: '#0a1030', f: '#ffffff' };
 
 /* ----- crowd: plain dots that bounce ----- */
@@ -673,21 +673,27 @@ function ballRoll(x, y) {
     p[2] = pz * cs + (kx * py - ky * px) * sn;
   }
 }
+function ucStar(c, R, rIn) { c.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, q = i % 2 ? rIn : R; c.lineTo(Math.cos(a) * q, Math.sin(a) * q); } c.closePath(); }
 function drawBall(c, b) {
-  const x = b.x, y = b.y, r = b.r, sh = off(r * .5, r * .8), lp = off(-r * .35, -r * .4);
+  const x = b.x, y = b.y, r = b.r * 1.15, sh = off(r * .5, r * .8), lp = off(-r * .35, -r * .4);
   let g = c.createRadialGradient(x + sh[0], y + sh[1], r * .2, x + sh[0], y + sh[1], r * 1.5);
   g.addColorStop(0, 'rgba(0,0,0,.5)'); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.beginPath(); c.arc(x + sh[0], y + sh[1], r * 1.5, 0, 7); c.fill();
   g = c.createRadialGradient(x + lp[0], y + lp[1], r * .1, x, y, r);
-  g.addColorStop(0, '#fff'); g.addColorStop(.6, '#e4e8ec'); g.addColorStop(1, '#98a0aa');
+  g.addColorStop(0, '#fff'); g.addColorStop(.6, '#e6ecf8'); g.addColorStop(1, '#8e9bbd');
   c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, 7); c.fill();
   c.save(); c.beginPath(); c.arc(x, y, r, 0, 7); c.clip();
-  c.strokeStyle = 'rgba(40,46,56,.5)'; c.lineWidth = r * .07; c.beginPath();
+  c.strokeStyle = 'rgba(205,168,78,.75)'; c.lineWidth = r * .05; c.beginPath();
   for (const [i, j] of BEDGES) { const A = BPTS[i], B2 = BPTS[j]; if (A[2] > 0 && B2[2] > 0) { c.moveTo(x + A[0] * r, y + A[1] * r); c.lineTo(x + B2[0] * r, y + B2[1] * r); } }
   c.stroke();
-  c.fillStyle = '#1d222a';
-  for (const p of BPTS) {
-    if (p[2] < -.02) continue;
-    c.beginPath(); c.ellipse(x + p[0] * r, y + p[1] * r, r * .34 * Math.max(.12, p[2]), r * .34, Math.atan2(p[1], p[0]), 0, 7); c.fill();
+  for (const p of BPTS) {                                         // Champions-League style: blue stars with gold rims on a white ball
+    if (p[2] < -.05) continue;
+    const k = Math.max(.14, p[2]);
+    c.save(); c.translate(x + p[0] * r, y + p[1] * r); c.rotate(Math.atan2(p[1], p[0])); c.scale(k, 1);
+    ucStar(c, r * .66, r * .3);
+    const sg = c.createRadialGradient(0, 0, r * .05, 0, 0, r * .66); sg.addColorStop(0, '#3f78f0'); sg.addColorStop(.6, '#1d46b8'); sg.addColorStop(1, '#0d2a86');
+    c.fillStyle = sg; c.fill(); c.strokeStyle = '#d6b25a'; c.lineWidth = r * .06; c.lineJoin = 'round'; c.stroke();
+    ucStar(c, r * .36, r * .17); c.strokeStyle = 'rgba(214,178,90,.65)'; c.lineWidth = r * .03; c.stroke();
+    c.restore();
   }
   g = c.createRadialGradient(x + lp[0], y + lp[1], r * .2, x, y, r * 1.05);
   g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(.62, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.5)');
