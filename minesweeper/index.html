@@ -382,12 +382,6 @@ function draw() {
       ctx.restore();
     }
   }
-  if (down && !zoomMode && !twoP() && down.i != null && !down.long && !rev[down.i]) {          // hold-to-flag progress ring
-    const p = clamp01((now - down.t0) / 380), x = (down.i % C) * s + s / 2, y = ((down.i / C) | 0) * s + s / 2;
-    ctx.strokeStyle = th.light ? '#000' : '#fff'; ctx.globalAlpha = .9; ctx.lineWidth = Math.max(2.5, s * .09); ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.arc(x, y, s * .4, -Math.PI / 2, -Math.PI / 2 + p * Math.PI * 2); ctx.stroke(); ctx.globalAlpha = 1;
-    if (p < 1) animUntil = Math.max(animUntil, performance.now() + 80);
-  }
   for (let k = fx.length - 1; k >= 0; k--) {
     const f = fx[k], p = (now - f.t) / 700; if (p >= 1) { fx.splice(k, 1); continue; }
     const x = (f.i % C) * s + s / 2, y = ((f.i / C) | 0) * s + s / 2;
@@ -437,7 +431,7 @@ cv.addEventListener('pointerdown', e => {
   }
   if (ptrs.size > 1) { if (down) clearTimeout(down.timer); down = null; return; }       // ignore accidental multi-touch
   if (e.button === 2) return; const i = cellAt(x, y); if (i < 0) return;
-  down = { i, x, y, long: false, t0: performance.now() }; invalidate(500);
+  down = { i, x, y, long: false };
   down.timer = setTimeout(() => { if (down && !twoP() && !rev[i] && !down.long) { down.long = true; toggleFlag(i); invalidate(400); } }, 380);
 });
 function gestureBase() {

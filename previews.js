@@ -341,29 +341,39 @@ function mines() {
 }
 
 
-/* ================= SUDOKU (self-solving, theme cycling) ================= */
+/* ================= SUDOKU (looks like the real game screen, solves itself) ================= */
 function sudoku() {
   const TH = [{ bg: '#04070f', tile: '#2f80ff', fg: '#eaf1ff' }, { bg: '#050206', tile: '#d04fb0', fg: '#ffffff' }, { bg: '#353230', tile: '#f08023', fg: '#ffffff' }, { bg: '#040a06', tile: '#2fb24a', fg: '#ecfff0' }, { bg: '#07040d', tile: '#8b5cf6', fg: '#f3edff' }];
-  let ti = 0, theme0 = 0, themeT = 1, sol, giv, val, order, step, sel, tick, phase, pops, pt;
+  const FA = v => String(v).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+  let ti = 0, theme0 = 0, themeT = 1, sol, giv, val, order, step, sel, tick, phase, pops, pt, lastD = 0, lastT = -9, secs = 0;
   const shuf = a => a.slice().sort(() => Math.random() - .5);
   const mix = (a, b, k) => { const pa = parseInt(a.slice(1), 16), pb = parseInt(b.slice(1), 16); const f = s => Math.round(((pa >> s) & 255) * (1 - k) + ((pb >> s) & 255) * k); return `rgb(${f(16)},${f(8)},${f(0)})`; };
   function gen() {
     const perm = shuf([1, 2, 3, 4, 5, 6, 7, 8, 9]), rm = [], cm = [];
-    for (const b of shuf([0, 1, 2])) for (const r of shuf([0, 1, 2])) { rm.push(b * 3 + r); }
-    for (const b of shuf([0, 1, 2])) for (const c of shuf([0, 1, 2])) { cm.push(b * 3 + c); }
+    for (const b of shuf([0, 1, 2])) for (const r of shuf([0, 1, 2])) rm.push(b * 3 + r);
+    for (const b of shuf([0, 1, 2])) for (const c of shuf([0, 1, 2])) cm.push(b * 3 + c);
     sol = new Array(81); giv = new Array(81); val = new Array(81).fill(0); pops = new Array(81).fill(-9);
     for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) { const v = perm[(rm[r] * 3 + Math.floor(rm[r] / 3) + cm[c]) % 9]; sol[r * 9 + c] = v; giv[r * 9 + c] = Math.random() < .44; if (giv[r * 9 + c]) val[r * 9 + c] = v; }
-    order = shuf([...Array(81).keys()].filter(i => !giv[i])); step = 0; sel = -1; tick = 0; phase = 0; pt = 0;
+    order = shuf([...Array(81).keys()].filter(i => !giv[i])); step = 0; sel = -1; tick = 0; phase = 0; pt = 0; secs = 0;
   }
   gen();
+  function icon(g, k, cx, cy, r, col) {
+    g.save(); g.translate(cx, cy); g.strokeStyle = col; g.fillStyle = col; g.lineWidth = 1.5; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath();
+    if (k === 0) { g.arc(0, 1, r * .55, Math.PI * 1.1, Math.PI * 2.2); g.moveTo(-r * .62, -r * .3); g.lineTo(-r * .55, -r * .72); g.moveTo(-r * .62, -r * .3); g.lineTo(-r * .15, -r * .35); g.stroke(); }
+    else if (k === 1) { g.rotate(-.6); g.rect(-r * .6, -r * .25, r * 1.2, r * .5); g.moveTo(-r * .1, -r * .25); g.lineTo(-r * .1, r * .25); g.stroke(); }
+    else if (k === 2) { g.rotate(.7); g.rect(-r * .15, -r * .75, r * .3, r * 1.1); g.moveTo(-r * .15, r * .35); g.lineTo(0, r * .75); g.lineTo(r * .15, r * .35); g.stroke(); }
+    else { g.arc(0, -r * .15, r * .45, 0, 7); g.moveTo(-r * .2, r * .5); g.lineTo(r * .2, r * .5); g.stroke(); }
+    g.restore();
+  }
   return { frame(g, w, h, dt, t) {
-    tick += dt; pt += dt; if (themeT < 1) themeT = Math.min(1, themeT + dt / .6);
-    if (phase === 0 && tick > .17) { tick = 0; if (sel >= 0) { val[sel] = sol[sel]; pops[sel] = t; } if (step < order.length) { sel = order[step++]; } else { sel = -1; phase = 1; pt = 0; } }
+    tick += dt; pt += dt; secs += dt; if (themeT < 1) themeT = Math.min(1, themeT + dt / .6);
+    if (phase === 0 && tick > .2) { tick = 0; if (sel >= 0) { val[sel] = sol[sel]; pops[sel] = t; lastD = sol[sel]; lastT = t; } if (step < order.length) sel = order[step++]; else { sel = -1; phase = 1; pt = 0; } }
     else if (phase === 1 && pt > 2.6) { theme0 = ti; ti = (ti + 1) % TH.length; themeT = 0; gen(); }
     const a = TH[theme0], b = TH[ti], bg = mix(a.bg, b.bg, themeT), tile = mix(a.tile, b.tile, themeT), fg = themeT < .5 ? a.fg : b.fg;
     g.fillStyle = bg; g.fillRect(0, 0, w, h);
-    const bs = Math.floor(Math.min(w * .9, h - 16)), s = bs / 9, x0 = (w - bs) / 2, y0 = (h - bs) / 2;
+    const m = 10, bs = Math.floor(Math.min(h - 2 * m, w * .52)), s = bs / 9, x0 = m, y0 = (h - bs) / 2;
     const sr = sel >= 0 ? Math.floor(sel / 9) : -1, sc = sel >= 0 ? sel % 9 : -1;
+    g.strokeStyle = 'rgba(200,210,230,.7)'; g.lineWidth = 2; g.beginPath(); g.rect(x0, y0, bs, bs); g.stroke();
     for (let i = 0; i < 81; i++) {
       const r = Math.floor(i / 9), c = i % 9, x = x0 + c * s, y = y0 + r * s;
       if (sel >= 0 && i !== sel && (r === sr || c === sc || (Math.floor(r / 3) === Math.floor(sr / 3) && Math.floor(c / 3) === Math.floor(sc / 3)))) { g.fillStyle = 'rgba(127,127,127,.14)'; g.fillRect(x, y, s, s); }
@@ -371,8 +381,20 @@ function sudoku() {
       if (phase === 1) { const wv = pt * 9 - (r + c); if (wv > 0 && wv < 2.5) { g.fillStyle = tile; g.globalAlpha = .55 * Math.sin(wv / 2.5 * Math.PI); g.fillRect(x, y, s, s); g.globalAlpha = 1; } }
       if (val[i]) { const user = !giv[i], pk = user ? Math.max(0, 1 - (t - pops[i]) / .25) : 0; g.save(); g.translate(x + s / 2, y + s / 2); g.scale(1 + pk * .45, 1 + pk * .45); g.fillStyle = user ? tile : fg; g.font = `${user ? 500 : 600} ${Math.round(s * .58)}px Arial`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(val[i], 0, s * .04); g.restore(); }
     }
-    g.lineCap = 'butt';
-    for (let k = 0; k <= 9; k++) { g.strokeStyle = k % 3 === 0 ? 'rgba(200,210,230,.7)' : 'rgba(200,210,230,.22)'; g.lineWidth = k % 3 === 0 ? 2 : 1; g.beginPath(); g.moveTo(x0 + k * s, y0); g.lineTo(x0 + k * s, y0 + bs); g.moveTo(x0, y0 + k * s); g.lineTo(x0 + bs, y0 + k * s); g.stroke(); }
+    for (let k = 1; k < 9; k++) { g.strokeStyle = k % 3 === 0 ? 'rgba(200,210,230,.7)' : 'rgba(200,210,230,.2)'; g.lineWidth = k % 3 === 0 ? 2 : 1; g.beginPath(); g.moveTo(x0 + k * s, y0); g.lineTo(x0 + k * s, y0 + bs); g.moveTo(x0, y0 + k * s); g.lineTo(x0 + bs, y0 + k * s); g.stroke(); }
+    // ---- right column: timer, info, number pad, tools (same as the real screen) ----
+    const rx = x0 + bs + 16, rw = w - rx - m; if (rw < 90) return; const cx = rx + rw / 2;
+    g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = fg; g.font = '600 16px Arial'; const sec = 200 + Math.floor(secs); g.fillText(FA(String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0')), cx, y0 + 8);
+    g.globalAlpha = .7; g.font = '10px Tahoma,Arial'; g.fillText('سختی: سخت  ·  اشتباه‌ها: ' + FA(0), cx, y0 + 28); g.globalAlpha = 1;
+    const cnt = new Array(10).fill(0); for (let i = 0; i < 81; i++) if (val[i]) cnt[val[i]]++;
+    const gy = y0 + 42, bw = (rw - 10) / 3, bh = Math.min(30, (bs - 42 - 44) / 3 - 4);
+    for (let d = 1; d <= 9; d++) {
+      const col = (d - 1) % 3, row = Math.floor((d - 1) / 3), x = rx + col * (bw + 5), y = gy + row * (bh + 4), press = Math.max(0, 1 - (t - lastT) / .25) * (lastD === d ? 1 : 0), left = 9 - cnt[d];
+      g.globalAlpha = left <= 0 ? .3 : 1; g.fillStyle = press > 0 ? tile : 'rgba(0,0,0,0)'; g.strokeStyle = 'rgba(200,210,230,.4)'; g.lineWidth = 1.2; g.beginPath(); rr(g, x, y, bw, bh, 7); if (press > 0) g.fill(); g.stroke();
+      g.fillStyle = fg; g.font = '500 14px Arial'; g.fillText(d, x + bw / 2, y + bh * .38); g.globalAlpha = .55; g.font = '7px Tahoma,Arial'; g.fillText(left > 0 ? FA(left) : '', x + bw / 2, y + bh - 4.5); g.globalAlpha = 1;
+    }
+    const ty = y0 + bs - 22, labels = ['برگشت', 'پاک‌کن', 'یادداشت', 'راهنما'];
+    for (let k = 0; k < 4; k++) { const x = rx + (k + .5) * rw / 4; icon(g, k, x, ty, 9, fg); g.fillStyle = fg; g.globalAlpha = .8; g.font = '8.5px Tahoma,Arial'; g.fillText(labels[k], x, ty + 17); g.globalAlpha = 1; }
   } };
 }
 
@@ -380,7 +402,8 @@ function sudoku() {
 const reg = [];
 document.querySelectorAll('canvas[data-p]').forEach(cv => {
   const fac = { tetris, soccer, g2048, mines, sudoku }[cv.dataset.p]; if (!fac) return;
-  const o = { cv, g: cv.getContext('2d'), w: 0, h: 0, dpr: 1, vis: true, inst: fac() };
+  let inst = null; try { inst = fac(); } catch (e) { console.warn('preview failed', e); return; }
+  const o = { cv, g: cv.getContext('2d'), w: 0, h: 0, dpr: 1, vis: true, inst, fails: 0 };
   const fit = () => { const r = cv.parentElement.getBoundingClientRect(); o.w = r.width; o.h = r.height; o.dpr = Math.min(2, window.devicePixelRatio || 1); cv.width = Math.round(o.w * o.dpr); cv.height = Math.round(o.h * o.dpr); };
   fit(); if (window.ResizeObserver) new ResizeObserver(fit).observe(cv.parentElement); else window.addEventListener('resize', fit);
   if (window.IntersectionObserver) new IntersectionObserver(e => { o.vis = e[0].isIntersecting; }).observe(cv);
@@ -389,7 +412,7 @@ document.querySelectorAll('canvas[data-p]').forEach(cv => {
 let last = 0;
 function loop(t) {
   const dt = Math.min(.05, (t - last) / 1000 || .016); last = t;
-  if (!document.hidden) for (const o of reg) if (o.vis && o.w) { o.g.setTransform(o.dpr, 0, 0, o.dpr, 0, 0); o.inst.frame(o.g, o.w, o.h, dt, t / 1000); }
+  if (!document.hidden) for (const o of reg) if (o.vis && o.w && o.fails < 5) { try { o.g.setTransform(o.dpr, 0, 0, o.dpr, 0, 0); o.inst.frame(o.g, o.w, o.h, dt, t / 1000); } catch (e) { o.fails++; if (o.fails === 1) console.warn('preview error', e); } }
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
