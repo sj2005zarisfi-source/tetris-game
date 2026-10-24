@@ -13,6 +13,8 @@ body{background:linear-gradient(160deg,#1a2050,#0b0e1c 55%,#10241c);background-s
   padding:max(26px,env(safe-area-inset-top)) 16px 34px;gap:20px;min-height:100vh;overflow-x:hidden}
 body.leaving{animation:out .26s forwards}
 #fx{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.sym{position:absolute;bottom:-70px;opacity:0;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px currentColor);animation:floatSym linear infinite}
+@keyframes floatSym{0%{opacity:0;transform:translate(0,0) rotate(0)}10%{opacity:.65}50%{transform:translate(var(--dx),-60vh) rotate(180deg)}90%{opacity:.5}100%{opacity:0;transform:translate(0,-118vh) rotate(360deg)}}
 .fl{position:absolute;bottom:-60px;opacity:0;animation:floatUp linear infinite}
 h1,p.sub,.grid{position:relative;z-index:1}
 h1{margin:6px 0 0;font-size:32px;background:linear-gradient(90deg,#ffe57a,#fff,#ffb347,#ffe57a);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;
@@ -95,11 +97,18 @@ try{
   const sdr=JSON.parse(localStorage.getItem('sd-records')||'[]').filter(r=>r.d===0).map(r=>r.t); if(sdr.length){const s2=Math.floor(Math.min(...sdr)/1000);document.getElementById('bsd').textContent='بهترین زمان (معمولی): '+Math.floor(s2/60)+':'+String(s2%60).padStart(2,'0');}
   const rc=JSON.parse(localStorage.getItem('ms-records')||'[]').filter(r=>r.d===0).map(r=>r.t); if(rc.length){const s=Math.floor(Math.min(...rc)/1000);document.getElementById('bms').textContent='بهترین زمان (Normal): '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
 }catch(e){}
-// floating background shapes
-const fx=document.getElementById('fx'), cols=['#7a55bd','#1b9bb0','#c87825','#37a06a','#b53a3a','#3560bb','#edc22e','#f65e3b'];
-for(let i=0;i<22;i++){
-  const e=document.createElement('i'); e.className='fl'; const s=14+Math.random()*26;
-  e.style.cssText=`left:${Math.random()*100}%;width:${s}px;height:${s}px;background:${cols[i%cols.length]};border-radius:${i%3===0?'50%':'4px'};animation-duration:${14+Math.random()*16}s;animation-delay:${-Math.random()*20}s`;
+// floating PlayStation symbols (triangle / circle / cross / square), each in its own colour
+const fx=document.getElementById('fx');
+const SYM=[
+  ['#3ddc97','<path d="M12 3.5 21 19.5H3z"/>'],
+  ['#ff4d5e','<circle cx="12" cy="12" r="8.5"/>'],
+  ['#4aa3ff','<path d="M5 5l14 14M19 5L5 19"/>'],
+  ['#ff6ec7','<rect x="4" y="4" width="16" height="16" rx="1.2"/>']
+];
+for(let i=0;i<26;i++){
+  const [col,path]=SYM[i%4], s=24+Math.random()*30, e=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  e.setAttribute('viewBox','0 0 24 24'); e.setAttribute('class','sym'); e.innerHTML=path;
+  e.style.cssText=`left:${Math.random()*96}%;width:${s}px;height:${s}px;color:${col};--dx:${(Math.random()-.5)*90}px;animation-duration:${13+Math.random()*15}s;animation-delay:${-Math.random()*24}s`;
   fx.appendChild(e);
 }
 // page leave transition
