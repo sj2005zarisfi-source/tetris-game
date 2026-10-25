@@ -398,10 +398,45 @@ function sudoku() {
   } };
 }
 
+/* ================= PLANTS vs ZOMBIES (mini battle on the real lawn art) ================= */
+function pvz() {
+  const A = window.PVZ; if (!A) return { frame() {} };
+  const PL = [['sunflower', 0, 0], ['peashooter', 0, 1], ['peashooter', 0, 2], ['sunflower', 1, 0], ['snowpea', 1, 1], ['peashooter', 1, 2], ['wallnut', 1, 4], ['peashooter', 2, 1], ['sunflower', 2, 0], ['peashooter', 2, 2], ['potato', 2, 4]];
+  const TY = ['peashooter', 'sunflower', 'cherry', 'wallnut', 'potato', 'snowpea'], COST = [100, 50, 150, 50, 25, 175];
+  let zs = [], peas = [], sunsA = [], spT = 1, shotT = {}, sunT = 2, bank = 150, bgc = null, bgS = 0, clock = 0;
+  const VH = 470;
+  function ensureBg(s) { const k = Math.round(s * 100); if (bgc && bgS === k) return; bgS = k; bgc = document.createElement('canvas'); bgc.width = Math.ceil(960 * s * 2); bgc.height = Math.ceil(VH * s * 2); const g = bgc.getContext('2d'); g.setTransform(s * 2, 0, 0, s * 2, 0, 0); A.bg(g); }
+  return { frame(g, w, h, dt, t) {
+    clock = t; const s = Math.max(w / 960, h / VH) * 1.0, ox = (w - 960 * s) / 2, oy = 0; ensureBg(s);
+    g.fillStyle = '#1d5a14'; g.fillRect(0, 0, w, h); g.save(); g.translate(ox, oy); g.scale(s, s); g.drawImage(bgc, 0, 0, 960, VH);
+    // sim
+    spT -= dt; if (spT <= 0) { spT = 3.2 + Math.random() * 1.5; zs.push({ r: Math.floor(Math.random() * 3), x: 1010, hp: 330, ty: ['normal', 'cone', 'normal', 'bucket', 'flag'][Math.floor(Math.random() * 5)], t: Math.random() * 5, dead: 0 }); }
+    PL.forEach(([tp, r, c], i) => { if (tp === 'peashooter' || tp === 'snowpea') { shotT[i] = (shotT[i] || Math.random()) - dt; if (shotT[i] <= 0 && zs.some(z => z.r === r && !z.dead && z.x > A.X0 + c * A.CW && z.x < 880)) { shotT[i] = 1.1; peas.push({ x: A.X0 + (c + .5) * A.CW + 44, y: A.Y0 + (r + .5) * A.CH - 14, r, snow: tp === 'snowpea' }); } } });
+    for (const z of zs) { z.t += dt; if (z.dead) { z.dead += dt / .9; continue; } const stop = A.X0 + 4.6 * A.CW; const wall = PL.some(([tp, r, c]) => r === z.r && tp === 'wallnut'); if (z.x > (wall && z.r === 1 ? A.X0 + 4.4 * A.CW : A.X0 + 5.5 * A.CW)) z.x -= 34 * dt; z.eat = wall && z.r === 1 && z.x <= A.X0 + 4.5 * A.CW; }
+    for (let i = peas.length - 1; i >= 0; i--) { const q = peas[i]; q.x += 320 * dt; const hit = zs.find(z => z.r === q.r && !z.dead && q.x > z.x - 26 && q.x < z.x + 18); if (hit) { hit.hp -= q.snow ? 34 : 26; if (hit.hp <= 0) hit.dead = .001; peas.splice(i, 1); } else if (q.x > 1000) peas.splice(i, 1); }
+    zs = zs.filter(z => z.dead < 1);
+    sunT -= dt; if (sunT <= 0) { sunT = 3.4; const sf = PL.filter(p => p[0] === 'sunflower')[Math.floor(Math.random() * 3)]; sunsA.push({ x: A.X0 + (sf[2] + .5) * A.CW, y: A.Y0 + (sf[1] + .5) * A.CH - 30, t: 0 }); }
+    for (let i = sunsA.length - 1; i >= 0; i--) { const sn = sunsA[i]; sn.t += dt; if (sn.t > 1.6) { const dx = A.BANK.x - sn.x, dy = A.BANK.y - sn.y, d = Math.hypot(dx, dy), v = 700 * dt; if (d < v + 6) { bank += 25; sunsA.splice(i, 1); continue; } sn.x += dx / d * v; sn.y += dy / d * v; } }
+    // draw: plants / zombies per row
+    for (let r = 0; r < 3; r++) {
+      PL.forEach(([tp, rr, c], i) => { if (rr !== r) return; g.save(); g.translate(A.X0 + (c + .5) * A.CW, A.Y0 + (r + .5) * A.CH + 4); g.scale(.9, .9); A.plant(g, tp, t + i, { hf: 1, armed: true, arm: 1 }); g.restore(); });
+      for (const z of zs.filter(z => z.r === r)) { g.save(); g.translate(z.x, A.Y0 + (r + .5) * A.CH + 40); A.zombie(g, z.ty, z.t, { eat: z.eat, dead: z.dead, hat: z.hp > 120 }); g.restore(); }
+    }
+    for (let r = 0; r < 3; r++) { g.save(); A.mower(g, 22, A.Y0 + (r + .5) * A.CH + 40, t, false); g.restore(); }
+    for (const q of peas) A.pea(g, q.x, q.y, q.snow);
+    for (const sn of sunsA) A.sun(g, sn.x, sn.y, 22, t);
+    // seed bar contents
+    TY.forEach((tp, i) => { const x = A.PK.x0 + i * A.PK.step, y = A.PK.y; g.save(); g.beginPath(); g.moveTo(x + 7, y); g.arcTo(x + A.PK.w, y, x + A.PK.w, y + A.PK.h, 7); g.arcTo(x + A.PK.w, y + A.PK.h, x, y + A.PK.h, 7); g.arcTo(x, y + A.PK.h, x, y, 7); g.arcTo(x, y, x + A.PK.w, y, 7); g.closePath(); g.fillStyle = '#f7f3d8'; g.fill(); g.strokeStyle = '#4a2a10'; g.lineWidth = 2.5; g.stroke(); g.clip(); g.fillStyle = '#d6ee9f'; g.fillRect(x + 4, y + 4, A.PK.w - 8, 62); g.translate(x + A.PK.w / 2, y + 40); g.scale(.4, .4); A.plant(g, tp, 0, { armed: true, hf: 1 }); g.restore(); g.fillStyle = '#2a1a08'; g.font = 'bold 15px Arial'; g.textAlign = 'center'; g.fillText(COST[i], x + A.PK.w / 2 - 3, y + 83); });
+    A.sun(g, A.BANK.x, A.BANK.y - 4, 24, t); g.fillStyle = '#1a1206'; g.font = 'bold 21px Arial'; g.textAlign = 'center'; g.fillText(bank, A.BANK.x, 95);
+    A.shovel(g, A.SHOVEL.x + A.SHOVEL.w / 2, 52, .78);
+    g.restore();
+  } };
+}
+
 /* ================= runner ================= */
 const reg = [];
 document.querySelectorAll('canvas[data-p]').forEach(cv => {
-  const fac = { tetris, soccer, g2048, mines, sudoku }[cv.dataset.p]; if (!fac) return;
+  const fac = { tetris, soccer, g2048, mines, sudoku, pvz }[cv.dataset.p]; if (!fac) return;
   let inst = null; try { inst = fac(); } catch (e) { console.warn('preview failed', e); return; }
   const o = { cv, g: cv.getContext('2d'), w: 0, h: 0, dpr: 1, vis: true, inst, fails: 0 };
   const fit = () => { const r = cv.parentElement.getBoundingClientRect(); o.w = r.width; o.h = r.height; o.dpr = Math.min(2, window.devicePixelRatio || 1); cv.width = Math.round(o.w * o.dpr); cv.height = Math.round(o.h * o.dpr); };
