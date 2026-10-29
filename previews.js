@@ -398,35 +398,10 @@ function sudoku() {
   } };
 }
 
-/* ================= REFLEX (4 pads around a prompt, plays itself) ================= */
-function reflex() {
-  const PC = ['#2f80ff', '#ff4d5e', '#2fd05a', '#ffb92e'];     // p1 bottom, p2 top, p3 left, p4 right
-  const ST = [{ k: 'white', ok: true }, { k: 'circle', ok: true }, { k: 'eq', txt: '7 + 5 = 12', ok: true }, { k: 'eq', txt: '9 × 4 = 38', ok: false }, { k: 'sad', ok: true }, { k: 'star', ok: false }, { k: 'dice', ok: true }, { k: 'eq', txt: '15 − 6 = 9', ok: true }];
-  let sc = [0, 0, 0, 0], i = 0, t0 = 0, who = -1, ft = -9, bad = false, done = false;
-  const rr = (g, x, y, w, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };
-  return { frame(g, w, h, dt, t) {
-    if (t0 === 0) t0 = t; const el = t - t0, st = ST[i % ST.length];
-    if (!done && el > .45) { done = true; if (st.ok) { who = Math.floor(Math.random() * 4); sc[who]++; bad = false; ft = t; } else if (Math.random() < .5) { who = Math.floor(Math.random() * 4); sc[who]--; bad = true; ft = t; } }
-    if (el > 1.5) { i++; t0 = t; done = false; }
-    g.fillStyle = '#070b14'; g.fillRect(0, 0, w, h);
-    const m = 6, pw = 44, ph = 34, ax = m + pw + m, ay = m + ph + m, aw = w - 2 * (m + pw + m), ah = h - 2 * (m + ph + m);
-    const pads = [[m + pw + m, h - m - ph, aw, ph, 0], [m + pw + m, m, aw, ph, 1], [m, m, pw, h - 2 * m, 2], [w - m - pw, m, pw, h - 2 * m, 3]];
-    pads.forEach(([x, y, ww, hh, p]) => { const on = who === p && t - ft < .6; g.fillStyle = on ? (bad ? '#ff3b4a' : '#27d65c') : PC[p] + '33'; rr(g, x, y, ww, hh, 10); g.fill(); g.strokeStyle = PC[p]; g.lineWidth = 2; g.stroke();
-      g.save(); g.translate(x + ww / 2, y + hh / 2); g.rotate([0, Math.PI, Math.PI / 2, -Math.PI / 2][p]); g.fillStyle = on ? '#04210e' : '#fff'; g.font = 'bold 22px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(sc[p], 0, 0); g.restore(); });
-    g.fillStyle = st.k === 'white' ? '#fff' : '#0e1424'; rr(g, ax, ay, aw, ah, 12); g.fill(); g.strokeStyle = 'rgba(255,255,255,.12)'; g.lineWidth = 2; g.stroke();
-    if (el > .12) { const cx = ax + aw / 2, cy = ay + ah / 2; g.fillStyle = '#ff8a1a'; g.textAlign = 'center'; g.textBaseline = 'middle';
-      if (st.k === 'circle') { g.beginPath(); g.arc(cx, cy, Math.min(aw, ah) * .3, 0, 7); g.fill(); }
-      else if (st.k === 'star') { g.fillStyle = '#b36cff'; g.beginPath(); for (let q = 0; q < 10; q++) { const a = -Math.PI / 2 + q * Math.PI / 5, r = (q % 2 ? .14 : .32) * Math.min(aw, ah); g.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r); } g.closePath(); g.fill(); }
-      else if (st.k === 'sad') { g.font = `${Math.min(aw, ah) * .6}px Arial`; g.fillText('😞', cx, cy); }
-      else if (st.k === 'dice') { g.font = `${Math.min(aw, ah) * .45}px Arial`; g.fillStyle = '#4fa0ff'; g.fillText('⚂⚃', cx - aw * .22, cy); g.fillStyle = '#ff5c70'; g.fillText('⚄⚀', cx + aw * .22, cy); }
-      else if (st.k === 'eq') { g.fillStyle = '#fff'; g.font = 'bold 19px Arial'; g.fillText(st.txt, cx, cy + ah * .2); g.save(); g.translate(cx, cy - ah * .2); g.rotate(Math.PI); g.fillText(st.txt, 0, 0); g.restore(); } }
-  } };
-}
-
 /* ================= runner ================= */
 const reg = [];
 document.querySelectorAll('canvas[data-p]').forEach(cv => {
-  const fac = { tetris, soccer, g2048, mines, sudoku, reflex }[cv.dataset.p]; if (!fac) return;
+  const fac = { tetris, soccer, g2048, mines, sudoku }[cv.dataset.p]; if (!fac) return;
   let inst = null; try { inst = fac(); } catch (e) { console.warn('preview failed', e); return; }
   const o = { cv, g: cv.getContext('2d'), w: 0, h: 0, dpr: 1, vis: true, inst, fails: 0 };
   const fit = () => { const r = cv.parentElement.getBoundingClientRect(); o.w = r.width; o.h = r.height; o.dpr = Math.min(2, window.devicePixelRatio || 1); cv.width = Math.round(o.w * o.dpr); cv.height = Math.round(o.h * o.dpr); };

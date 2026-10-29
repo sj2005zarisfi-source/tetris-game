@@ -1,10 +1,11 @@
-# Jokers & Chips
+# بازی‌ها
 
-A Balatro-style poker roguelike that runs entirely in the browser (single `index.html`, no build step).
+- `index.html` : منوی انتخاب بازی (با پیش‌نمایش زنده‌ی هر بازی)
+- `tetris/` : تتریس (امتیازدهی NES، تم فضایی، کنترل لمسی)
+- `soccer/` : فوتبال دیسکی (شبیه Soccer Stars؛ تک‌نفره و دو نفره، اولین نفر به ۳ گل)
+- `2048/` : بازی 2048 با UNDO و ذخیره رکورد
+- `minesweeper/` : مین‌روب (معمولی / سخت / اکستریم، تم‌های رنگی، زوم، حالت دو نفره)
+- `sudoku/` : سودوکو (معمولی / سخت / اکستریم، یادداشت، راهنما، جدول زمان‌ها، تم‌های رنگی)
 
-- Beat 3 blinds per ante (Small, Big, Boss) across 8 antes
-- Play poker hands, level them up with Planet cards, collect Jokers, Tarots, Vouchers and Packs
-- 50+ Jokers with editions (Foil, Holographic, Polychrome, Negative), 13 Boss Blinds, 5 starting decks
-- Works on phone and desktop. Open the GitHub Pages URL to play.
 
-Original code and art. Inspired by Balatro, not affiliated with it.
+بدون وابستگی؛ فقط `index.html` را باز کنید یا با GitHub Pages منتشر کنید.
